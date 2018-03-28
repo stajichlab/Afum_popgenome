@@ -30,20 +30,20 @@ if [ ! $N ]; then
  exit
 fi
 
-MAX=`wc -l $SAMPFILE | awk '{print $1}'`
-
+MAX=$(wc -l $SAMPFILE | awk '{print $1}')
+echo "$N $MAX for $SAMPFILE"
 if [ $N -gt $MAX ]; then 
  echo "$N is too big, only $MAX lines in $SAMPFILE"
  exit
 fi
 
-IFS="\t"
+IFS=,
 tail -n +2 $SAMPFILE | sed -n ${N}p | while read RUN STRAIN SAMPLE CENTER EXP PROJ
 do
   OUTDIR=$TOPOUTDIR
-  PAIR1=$RUN.1.trim.fq.gz
-  PAIR2=$RUN.2.trim.fq.gz
-  SINGLE=$RUN.s.trim.fq.gz
+  PAIR1=$INDIR/${RUN}.1.trim.fq.gz
+  PAIR2=$INDIR/${RUN}.2.trim.fq.gz
+  SINGLE=$INDIR/${RUN}.s.trim.fq.gz
   
   SAMFILE=NULL
    
@@ -72,6 +72,4 @@ do
   else
       echo "NO $PAIR1 and no $SINGLE?"
   fi
-  
- done
 done
