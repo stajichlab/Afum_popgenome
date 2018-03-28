@@ -13,8 +13,8 @@ OUTDIR=gvcf
 
 mkdir -p $OUTDIR
 
-b=`basename $GENOMEIDX .fasta`
-dir=`dirname $GENOMEIDX`
+b=$(basename $GENOMEIDX .fasta)
+dir=$(dirname $GENOMEIDX)
 
 N=${SLURM_ARRAY_TASK_ID}
 CPU=1
@@ -32,7 +32,7 @@ if [ ! $N ]; then
  exit
 fi
 
-MAX=`wc -l $SAMPFILE | awk '{print $1}'`
+MAX=$(wc -l $SAMPFILE | awk '{print $1}')
 
 if [ $N -gt $MAX ]; then 
  echo "$N is too big, only $MAX lines in $SAMPFILE"
