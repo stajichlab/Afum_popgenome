@@ -20,7 +20,7 @@ if [ $SLURM_CPUS_ON_NODE ]; then
  CPU=$SLURM_CPUS_ON_NODE
 fi
 
-SAMPFILE=Af100_samples.csv
+SAMPFILE=SRA_samples.csv
 if [ ! $N ]; then
  N=$1
 fi
@@ -37,44 +37,41 @@ if [ $N -gt $MAX ]; then
  exit
 fi
 
-IFS=,
-sed -n ${N}p $SAMPFILE | while read STRAIN FWD REV;
+IFS="\t"
+tail -n +2 $SAMPFILE | sed -n ${N}p | while read RUN STRAIN SAMPLE CENTER EXP PROJ
 do
- for LANE in lane1 lane2
- do
-  OUTDIR=$TOPOUTDIR/$LANE
-  mkdir -p $OUTDIR
-  LIBRARY=$(basename $FWD .fastq.gz)
-  LIBRARY1=$(basename $FWD .fastq.gz)
-  LIBRARY2=$(basename $REV .fastq.gz)
-  PAIR1=${INDIR}/$LANE/${LIBRARY1}_val_1.fq.gz
-  PAIR2=${INDIR}/$LANE/${LIBRARY2}_val_2.fq.gz
+  OUTDIR=$TOPOUTDIR
+  PAIR1=$RUN.1.trim.fq.gz
+  PAIR2=$RUN.2.trim.fq.gz
+  SINGLE=$RUN.s.trim.fq.gz
   
-  echo "... files are $PAIR1 $PAIR2 $LIBRARY"
   SAMFILE=NULL
    
-  if [ -f $PAIR2 ]; then
-   SAMFILE=$OUTDIR/${STRAIN}.PE.unsrt.sam
+  if [ -e $PAIR1 ]; then      
+   SAMFILE=$OUTDIR/${RUN}.PE.unsrt.sam
    echo "SAMFILE is $SAMFILE"
    if [ ! -f $SAMFILE ]; then
-	bwa mem -t $CPU -R "@RG\tID:$STRAIN\tSM:$STRAIN\tLB:$LIBRARY\tPL:illumina\tCN:Seqmatic" $GENOME $PAIR1 $PAIR2 > $SAMFILE
+	bwa mem -t $CPU -R "@RG\tID:$STRAIN\tSM:$SAMPLE\tLB:$RUN\tPL:illumina\tCN:$CENTER" $GENOME $PAIR1 $PAIR2 > $SAMFILE
    fi 
-   if [ ! -f $OUTDIR/${STRAIN}.PE.bam ]; then
-	samtools fixmate -O bam $SAMFILE $TEMP/${STRAIN}.fixmate.bam
-	samtools sort -O bam -o  $OUTDIR/${STRAIN}.PE.bam -T $TEMP $TEMP/${STRAIN}.fixmate.bam
-	/usr/bin/rm $TEMP/${STRAIN}.fixmate.bam
+   if [ ! -f $OUTDIR/${RUN}.PE.bam ]; then
+	samtools fixmate -O bam $SAMFILE $TEMP/${RUN}.fixmate.bam
+	samtools sort -O bam -o  $OUTDIR/${RUN}.PE.bam -T $TEMP $TEMP/${RUN}.fixmate.bam
+	/usr/bin/rm $TEMP/${RUN}.fixmate.bam
    fi
-  else
+  elif [ -e $SINGLE ]; then
    SAMFILE=$OUTDIR/${ID}.SE.unsrt.sam
    echo "SAMFILE is $SAMFILE"
    if [ ! -f $SAMFILE ]; then
-    	bwa mem -t $CPU -R "@RG\tID:$STRAIN\tSM:$STRAIN\tLB:$LIBRARY\tPL:illumina\tCN:Seqmatic" $GENOME $PAIR1 > $SAMFILE
+    	bwa mem -t $CPU -R "@RG\tID:$STRAIN\tSM:$SAMPLE\tLB:$RUN\tPL:illumina\tCN:$CENTER" $GENOME $SINGLE > $SAMFILE
    fi
-   if [ ! -f $OUTDIR/${STRAIN}.SE.bam ]; then
-	samtools view -b $SAMFILE > $TEMP/${STRAIN}.unsrt.bam	
-	samtools sort -O bam -o $OUTDIR/${STRAIN}.SE.bam -T $TEMP $TEMP/${STRAIN}.unsrt.bam
-	/usr/bin/rm $TEMP/${STRAIN}.unsrt.bam
-    fi
- fi
+   if [ ! -f $OUTDIR/${RUN}.SE.bam ]; then
+	samtools view -b $SAMFILE > $TEMP/${RUN}.unsrt.bam	
+	samtools sort -O bam -o $OUTDIR/${RUN}.SE.bam -T $TEMP $TEMP/${RUN}.unsrt.bam
+	/usr/bin/rm $TEMP/${RUN}.unsrt.bam
+   fi
+  else
+      echo "NO $PAIR1 and no $SINGLE?"
+  fi
+  
  done
 done
