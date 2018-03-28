@@ -59,7 +59,7 @@ do
 	/usr/bin/rm $TEMP/${RUN}.fixmate.bam
    fi
   elif [ -e $SINGLE ]; then
-   SAMFILE=$OUTDIR/${ID}.SE.unsrt.sam
+   SAMFILE=$OUTDIR/${RUN}.SE.unsrt.sam
    echo "SAMFILE is $SAMFILE"
    if [ ! -f $SAMFILE ]; then
     	bwa mem -t $CPU -R "@RG\tID:$STRAIN\tSM:$SAMPLE\tLB:$RUN\tPL:illumina\tCN:$CENTER" $GENOME $SINGLE > $SAMFILE
