@@ -1,5 +1,5 @@
 #!/usr/bin/bash
-#SBATCH --mem 8G --ntasks 8 --nodes 1 -J bwa.Afum --out logs/Afum.bwa.%a.log --time 8:00:00
+#SBATCH --mem 8G --ntasks 8 --nodes 1 -J bwa.Afum --out logs/Afum.bwa.%A_%a.log --time 8:00:00
 
 module load bwa/0.7.15
 module unload java
