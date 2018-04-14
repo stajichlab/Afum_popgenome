@@ -14,8 +14,10 @@ my $prefixes = shift;
 open(my $fh => $prefixes) || die "$prefixes: $!";
 my %map;
 while(<$fh>) {
-    next if /^Pref/;
+    next if /^(Pref|BioSample)/;
+    chomp;
     my ($pref,$name) = split(/\t/,$_);
+    #warn("'$pref' ==> $name\n");
     $map{$pref} = $name;
 }
 
@@ -25,7 +27,7 @@ while( my $tree = $in->next_tree ) {
 	if( my $lookup = $map{$id} ) {
 	    $node->id($lookup);
 	} else {
-	    warn("no $id in prefix table\n");
+	    warn("no '$id' in prefix table\n");
 	}
     }
     Bio::TreeIO->new(-format => 'newick')->write_tree($tree);
