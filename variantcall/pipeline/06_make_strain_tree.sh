@@ -7,7 +7,7 @@ TREEDIR=strain_tree
 VCF=Variants_filter/A_fumigiatus_Af293.Popgen1.selected.SNP.vcf
 VCFTAB=Variants_filter/A_fumigiatus_Af293.Popgen1.selected.SNP.tab
 OUTFAS=$(basename $VCFTAB .tab)".fasaln"
-BOOTSTRAPS=100
+BOOTSTRAPS=50
 
 if [ ! -f $VCFTAB ]; then
  vcf-to-tab < $VCF > $VCFTAB
@@ -21,5 +21,5 @@ fi
 
 pushd $TREEDIR
 
-iqtree-omp -nt 3 -s $OUTFAS -b $BOOTSTRAPS -m GTR+ASC
+iqtree -nt 3 -s $OUTFAS -b $BOOTSTRAPS -m GTR+ASC
 
