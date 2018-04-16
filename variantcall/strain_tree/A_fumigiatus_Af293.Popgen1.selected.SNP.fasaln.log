@@ -5703,3 +5703,255 @@ Iteration 90 / LogL: -2440009.962 / Time: 0h:26m:40s (0h:23m:54s left)
 Iteration 100 / LogL: -2446341.482 / Time: 0h:28m:57s (0h:20m:25s left)
 Iteration 110 / LogL: -2440794.065 / Time: 0h:31m:9s (0h:17m:7s left)
 Iteration 120 / LogL: -2439788.235 / Time: 0h:33m:29s (0h:14m:2s left)
+
+******************************************************
+CHECKPOINT: Resuming analysis from A_fumigiatus_Af293.Popgen1.selected.SNP.fasaln.ckp.gz
+
+IQ-TREE multicore version 1.6.3 for Linux 64-bit built Mar 22 2018
+Developed by Bui Quang Minh, Nguyen Lam Tung, Olga Chernomor,
+Heiko Schmidt, Dominik Schrempf, Michael Woodhams.
+
+Host:    i28 (AVX2, FMA3, 503 GB RAM)
+Command: iqtree -nt AUTO -s A_fumigiatus_Af293.Popgen1.selected.SNP.fasaln -bb 1000 -m GTR+ASC
+Seed:    828991 (Using SPRNG - Scalable Parallel Random Number Generator)
+Time:    Sat Apr 14 16:31:16 2018
+Kernel:  AVX+FMA - auto-detect threads (64 CPU cores detected)
+
+WARNING: Command-line argument `AUTO` differs from checkpoint `3`
+WARNING: Command-line argument `-bb` differs from checkpoint `-b`
+WARNING: Command-line argument `1000` differs from checkpoint `100`
+WARNING: Command-line differs from checkpoint!
+Reading alignment file A_fumigiatus_Af293.Popgen1.selected.SNP.fasaln ... Fasta format detected
+Alignment most likely contains DNA/RNA sequences
+Alignment has 124 sequences with 105772 columns, 87533 distinct patterns
+97697 parsimony-informative, 8075 singleton sites, 0 constant sites
+              Gap/Ambiguity  Composition  p-value
+   1  SAMN01815905    5.32%    failed      0.00%
+   2  SAMN01815907    3.43%    failed      2.83%
+   3  AF100-4-B      14.64%    passed     92.43%
+   4  SAMD00013549    7.17%    passed      8.63%
+   5  AF100-9-A      19.58%    passed     94.75%
+   6  SAMN00717313    3.25%    failed      0.02%
+   7  SAMN00717305    3.18%    failed      0.02%
+   8  SAMN00717318    3.84%    failed      0.00%
+   9  SAMD00013557    4.37%    passed     39.40%
+  10  SAMD00019249    2.17%    passed     87.08%
+  11  SAMEA3267234    4.75%    failed      0.00%
+  12  SAMN01815894    3.82%    passed      5.09%
+  13  SAMN00717306    3.20%    failed      0.01%
+  14  Obar-4          7.43%    failed      0.12%
+  15  SAMEA3267222    2.27%    failed      0.01%
+  16  AF100-5-A      13.01%    passed     78.22%
+  17  SAMD00019244    3.61%    passed     12.19%
+  18  AF100-9-C      16.49%    passed     90.18%
+  19  SAMN00717307    3.31%    failed      0.06%
+  20  SAMEA3267227    3.47%    failed      0.00%
+  21  SAMN00254055    4.50%    failed      0.00%
+  22  SAMN01815891    4.47%    failed      0.04%
+  23  SAMD00013550    8.90%    passed     25.90%
+  24  SAMN01815897    5.25%    failed      0.00%
+  25  SAMEA3267239    6.18%    failed      0.66%
+  26  SAMD00019248    1.84%    passed     92.25%
+  27  SAMN00717303    6.60%    failed      0.02%
+  28  SAMN01815887    4.34%    passed     29.87%
+  29  SAMN00254058    7.04%    failed      4.32%
+  30  SAMN01815888    4.59%    failed      0.07%
+  31  SAMN00717314    3.43%    failed      0.06%
+  32  AF100-7-B      16.68%    passed     33.62%
+  33  SAMN00717299    6.69%    failed      0.02%
+  34  SAMD00013555    8.15%    failed      0.53%
+  35  SAMEA3267237    6.30%    failed      1.75%
+  36  AF100-5-C      14.73%    passed     90.94%
+  37  SAMEA1709823    7.88%    passed     56.20%
+  38  SAMD00013551    3.21%    passed     98.86%
+  39  SAMD00013543    7.17%    passed      5.14%
+  40  SAMEA3267235    6.15%    failed      3.65%
+  41  AF100-8-B      20.27%    passed     14.62%
+  42  SAMN01815896    3.81%    failed      0.00%
+  43  SAMN00717301    7.45%    failed      0.02%
+  44  SAMN01815898    3.85%    failed      0.00%
+  45  SAMEA3267241    6.12%    failed      0.81%
+  46  SAMN01815899    6.82%    failed      0.00%
+  47  AF100-7-C      22.08%    failed      0.48%
+  48  SAMN00717316    5.81%    failed      0.75%
+  49  SAMN00115744    3.90%    failed      1.73%
+  50  SAMEA3267243    6.19%    failed      1.05%
+  51  SAMD00019246    6.98%    passed     75.56%
+  52  SAMEA3267229    3.41%    failed      0.00%
+  53  SAMN01815885    6.40%    failed      0.00%
+  54  SAMN01815889    6.41%    failed      0.00%
+  55  AF100-6-D      12.19%    passed     17.26%
+  56  REF             0.00%    failed      0.00%
+  57  SAMN01815895    4.31%    failed      0.03%
+  58  SAMEA3267231    5.09%    failed      0.00%
+  59  Obar-AF293      9.94%    failed      3.44%
+  60  SAMEA3267240    6.15%    failed      0.71%
+  61  SAMN01815904    5.18%    failed      0.00%
+  62  SAMN01815910    6.74%    failed      0.00%
+  63  SAMN00717304    6.18%    failed      0.05%
+  64  SAMD00013552    6.71%    failed      0.25%
+  65  SAMD00013545    7.85%    failed      3.67%
+  66  Obar-12        10.35%    passed      6.82%
+  67  SAMD00013548   10.39%    passed     40.08%
+  68  SAMD00013547    5.67%    passed     75.58%
+  69  SAMN00115745    5.50%    failed      0.00%
+  70  SAMN00717298    6.73%    failed      0.03%
+  71  AF100-2-B      12.58%    passed      9.36%
+  72  AF100-4-A      15.09%    passed     79.27%
+  73  SAMD00013553    7.06%    passed     13.74%
+  74  AF100-3-A      16.23%    passed     81.30%
+  75  SAMD00019247    1.90%    passed     88.36%
+  76  Obar-11         9.55%    failed      0.78%
+  77  SAMD00019245   10.85%    passed      9.47%
+  78  AF100-2-C      12.19%    passed     35.50%
+  79  SAMN01815893    4.41%    failed      0.05%
+  80  AF100-3-C      16.58%    passed     54.19%
+  81  AF100-6-A      12.68%    passed     72.41%
+  82  AF100-7-A      29.74%    failed      0.03%
+  83  SAMN01815909    3.92%    passed     26.92%
+  84  SAMD00013556   18.74%    passed     76.77%
+  85  SAMEA3267223    7.11%    failed      3.27%
+  86  SAMEA3267221    1.91%    failed      0.31%
+  87  AF100-6-B      15.31%    passed     68.12%
+  88  AF100-2-A      12.28%    passed     50.76%
+  89  AF100-3-B      14.03%    passed     91.33%
+  90  SAMEA1709821    9.44%    passed     57.66%
+  91  SAMEA3267225    6.60%    passed      8.39%
+  92  SAMN01815908    2.48%    failed      0.02%
+  93  SAMN01815892    2.85%    failed      0.00%
+  94  SAMEA3267236    6.06%    failed      0.43%
+  95  SAMEA3267230    5.69%    failed      0.00%
+  96  SAMD00013559   11.90%    passed     78.61%
+  97  AF100-8-A      15.80%    passed     89.20%
+  98  SAMD00019243    3.75%    passed     18.41%
+  99  SAMEA3267220    4.73%    failed      0.30%
+ 100  SAMD00019242    4.00%    passed     12.55%
+ 101  SAMD00013554    3.40%    passed     56.58%
+ 102  SAMD00013544    7.17%    passed      8.63%
+ 103  AF100-5-B      13.14%    passed     89.54%
+ 104  AF100-4-C      13.04%    passed     96.46%
+ 105  SAMN01815903    6.60%    failed      0.08%
+ 106  SAMN00717317    5.82%    failed      0.52%
+ 107  SAMN00717302    6.63%    failed      0.04%
+ 108  SAMD00013558    7.28%    failed      0.67%
+ 109  SAMEA3267224    2.21%    passed     74.13%
+ 110  SAMN01815886    6.41%    failed      0.00%
+ 111  SAMEA3267226    0.04%    failed      0.00%
+ 112  SAMN00254057    4.94%    failed      2.24%
+ 113  SAMN01815906    3.86%    failed      0.00%
+ 114  SAMD00013546    4.37%    passed     39.40%
+ 115  SAMN00717300    6.70%    failed      0.02%
+ 116  AF100-8-C      16.03%    passed     98.06%
+ 117  SAMN00254056    5.73%    failed      0.34%
+ 118  SAMEA3267242    6.19%    failed      1.28%
+ 119  SAMEA3267233    2.99%    failed      0.00%
+ 120  AF100-9-B      14.86%    passed     97.12%
+ 121  SAMEA3267238    2.41%    failed      0.00%
+ 122  SAMEA3267228    6.51%    failed      0.08%
+ 123  SAMEA3267232    3.03%    passed     15.77%
+ 124  SAMN01815890    3.92%    failed      0.00%
+****  TOTAL           7.50%  72 sequences failed composition chi2 test (p-value<5%; df=3)
+NOTE: minimal branch length is reduced to 0.000000945430 for long alignment
+NOTE: SAMD00013544 is identical to SAMD00013549 but kept for subsequent analysis
+NOTE: SAMD00013546 is identical to SAMD00013557 but kept for subsequent analysis
+
+CHECKPOINT: Initial tree restored
+Generating 1000 samples for ultrafast bootstrap (seed: 828991)...
+Ascertainment bias correction: 4 unobservable constant patterns
+
+NOTE: 685 MB RAM (0 GB) is required!
+Measuring multi-threading efficiency up to 64 CPU cores
+Increase to 10 rounds for branch lengths
+4 trees examined
+Threads: 1 / Time: 69.634 sec / Speedup: 1.000 / Efficiency: 100% / LogL: -7295385
+Threads: 2 / Time: 47.659 sec / Speedup: 1.461 / Efficiency: 73% / LogL: -7295385
+Threads: 3 / Time: 27.345 sec / Speedup: 2.546 / Efficiency: 85% / LogL: -7295385
+Threads: 4 / Time: 24.835 sec / Speedup: 2.804 / Efficiency: 70% / LogL: -7295385
+Threads: 5 / Time: 23.395 sec / Speedup: 2.976 / Efficiency: 60% / LogL: -7295385
+Threads: 6 / Time: 24.518 sec / Speedup: 2.840 / Efficiency: 47% / LogL: -7295385
+BEST NUMBER OF THREADS: 5
+
+CHECKPOINT: Model parameters restored, LogL: -2440620.678
+--------------------------------------------------------------------
+|             INITIALIZING CANDIDATE TREE SET                      |
+--------------------------------------------------------------------
+CHECKPOINT: Candidate tree set restored, best LogL: -2439787.841
+Finish initializing candidate tree set (20)
+Current best tree score: -2439787.841 / CPU time: 0.000
+Number of iterations: 117
+--------------------------------------------------------------------
+|               OPTIMIZING CANDIDATE TREE SET                      |
+--------------------------------------------------------------------
+Iteration 120 / LogL: -2441181.932 / Time: 0h:4m:47s (0h:3m:12s left)
+Iteration 130 / LogL: -2446450.133 / Time: 0h:7m:26s (0h:4m:1s left)
+Iteration 140 / LogL: -2440170.680 / Time: 0h:10m:13s (0h:4m:24s left)
+Iteration 150 / LogL: -2440915.259 / Time: 0h:13m:7s (0h:4m:23s left)
+Log-likelihood cutoff on original alignment: -2440341.290
+Iteration 160 / LogL: -2440188.644 / Time: 0h:16m:13s (0h:4m:4s left)
+Iteration 170 / LogL: -2441793.290 / Time: 0h:18m:47s (0h:3m:19s left)
+Iteration 180 / LogL: -2442483.203 / Time: 0h:20m:36s (0h:2m:18s left)
+Iteration 190 / LogL: -2443522.534 / Time: 0h:22m:24s (0h:1m:11s left)
+Iteration 200 / LogL: -2440372.415 / Time: 0h:24m:13s (0h:0m:0s left)
+Log-likelihood cutoff on original alignment: -2440340.375
+NOTE: Bootstrap correlation coefficient of split occurrence frequencies: 0.926
+NOTE: UFBoot does not converge, continue at least 100 more iterations
+Iteration 210 / LogL: -2440349.713 / Time: 0h:25m:59s (0h:11m:10s left)
+Iteration 220 / LogL: -2440567.902 / Time: 0h:27m:50s (0h:10m:9s left)
+Iteration 230 / LogL: -2440931.075 / Time: 0h:29m:36s (0h:9m:2s left)
+Iteration 240 / LogL: -2442568.720 / Time: 0h:31m:23s (0h:7m:52s left)
+Iteration 250 / LogL: -2440146.062 / Time: 0h:33m:8s (0h:6m:38s left)
+Log-likelihood cutoff on original alignment: -2440340.375
+Iteration 260 / LogL: -2440365.552 / Time: 0h:35m:3s (0h:5m:24s left)
+Iteration 270 / LogL: -2443689.666 / Time: 0h:37m:17s (0h:4m:9s left)
+Iteration 280 / LogL: -2440019.930 / Time: 0h:39m:32s (0h:2m:49s left)
+Iteration 290 / LogL: -2440942.954 / Time: 0h:41m:27s (0h:1m:26s left)
+Iteration 300 / LogL: -2440896.940 / Time: 0h:43m:30s (0h:0m:0s left)
+Log-likelihood cutoff on original alignment: -2440333.386
+NOTE: Bootstrap correlation coefficient of split occurrence frequencies: 0.995
+TREE SEARCH COMPLETED AFTER 300 ITERATIONS / Time: 0h:43m:31s
+
+--------------------------------------------------------------------
+|                    FINALIZING TREE SEARCH                        |
+--------------------------------------------------------------------
+Performs final model parameters optimization
+Estimate model parameters (epsilon = 0.010)
+1. Initial log-likelihood: -2440620.678
+2. Current log-likelihood: -2440473.277
+3. Current log-likelihood: -2440473.022
+4. Current log-likelihood: -2440472.993
+5. Current log-likelihood: -2440472.973
+6. Current log-likelihood: -2440472.961
+7. Current log-likelihood: -2440472.950
+Optimal log-likelihood: -2440472.944
+Rate parameters:  A-C: 0.95828  A-G: 4.18440  A-T: 0.96007  C-G: 0.67724  C-T: 4.13170  G-T: 1.00000
+Base frequencies:  A: 0.236  C: 0.264  G: 0.261  T: 0.239
+Parameters optimization took 7 rounds (30.668 sec)
+BEST SCORE FOUND : -2440472.944
+Creating bootstrap support values...
+Split supports printed to NEXUS file A_fumigiatus_Af293.Popgen1.selected.SNP.fasaln.splits.nex
+Total tree length: 5.179
+
+Total number of iterations: 300
+CPU time used for tree search: 11601.188 sec (3h:13m:21s)
+Wall-clock time used for tree search: 2389.330 sec (0h:39m:49s)
+Total CPU time used: 12335.022 sec (3h:25m:35s)
+Total wall-clock time used: 2642.228 sec (0h:44m:2s)
+
+Computing bootstrap consensus tree...
+Reading input file A_fumigiatus_Af293.Popgen1.selected.SNP.fasaln.splits.nex...
+124 taxa and 449 splits.
+Consensus tree written to A_fumigiatus_Af293.Popgen1.selected.SNP.fasaln.contree
+Reading input trees file A_fumigiatus_Af293.Popgen1.selected.SNP.fasaln.contree
+Log-likelihood of consensus tree: -2439993.101
+
+Analysis results written to: 
+  IQ-TREE report:                A_fumigiatus_Af293.Popgen1.selected.SNP.fasaln.iqtree
+  Maximum-likelihood tree:       A_fumigiatus_Af293.Popgen1.selected.SNP.fasaln.treefile
+  Likelihood distances:          A_fumigiatus_Af293.Popgen1.selected.SNP.fasaln.mldist
+
+Ultrafast bootstrap approximation results written to:
+  Split support values:          A_fumigiatus_Af293.Popgen1.selected.SNP.fasaln.splits.nex
+  Consensus tree:                A_fumigiatus_Af293.Popgen1.selected.SNP.fasaln.contree
+  Screen log file:               A_fumigiatus_Af293.Popgen1.selected.SNP.fasaln.log
+
+Date and Time: Sat Apr 14 17:15:25 2018
