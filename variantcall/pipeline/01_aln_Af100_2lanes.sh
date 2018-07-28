@@ -60,9 +60,9 @@ do
 	bwa mem -t $CPU -R "@RG\tID:$STRAIN\tSM:$STRAIN\tLB:$LIBRARY\tPL:illumina\tCN:Seqmatic" $GENOME $PAIR1 $PAIR2 > $SAMFILE
    fi 
    if [ ! -f $OUTDIR/${STRAIN}.PE.bam ]; then
-	samtools fixmate -O bam $SAMFILE $TEMP/${STRAIN}.fixmate.bam
-	samtools sort -O bam -o  $OUTDIR/${STRAIN}.PE.bam -T $TEMP $TEMP/${STRAIN}.fixmate.bam
-	/usr/bin/rm $TEMP/${STRAIN}.fixmate.bam
+	samtools fixmate --threads $CPU -O bam $SAMFILE $TEMP/${STRAIN}.fixmate.bam
+	samtools sort --threads $CPU -O bam -o $OUTDIR/${STRAIN}.PE.bam -T $TEMP $TEMP/${STRAIN}.fixmate.bam
+	/usr/bin/rm $TEMP/${STRAIN}.fixmate.bam $SAMFILE
    fi
   else
    SAMFILE=$OUTDIR/${ID}.SE.unsrt.sam
@@ -71,9 +71,9 @@ do
     	bwa mem -t $CPU -R "@RG\tID:$STRAIN\tSM:$STRAIN\tLB:$LIBRARY\tPL:illumina\tCN:Seqmatic" $GENOME $PAIR1 > $SAMFILE
    fi
    if [ ! -f $OUTDIR/${STRAIN}.SE.bam ]; then
-	samtools view -b $SAMFILE > $TEMP/${STRAIN}.unsrt.bam	
-	samtools sort -O bam -o $OUTDIR/${STRAIN}.SE.bam -T $TEMP $TEMP/${STRAIN}.unsrt.bam
-	/usr/bin/rm $TEMP/${STRAIN}.unsrt.bam
+	samtools view --threads $CPU -b $SAMFILE > $TEMP/${STRAIN}.unsrt.bam	
+	samtools sort --threads $CPU -O bam -o $OUTDIR/${STRAIN}.SE.bam -T $TEMP $TEMP/${STRAIN}.unsrt.bam
+	/usr/bin/rm $TEMP/${STRAIN}.unsrt.bam $SAMFILE
     fi
  fi
  done

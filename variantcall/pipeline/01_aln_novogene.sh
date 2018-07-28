@@ -1,5 +1,5 @@
 #!/usr/bin/bash
-#SBATCH --mem 8G --ntasks 8 --nodes 1 -J bwa.Afum --out logs/Afum.bwa.%A_%a.log --time 8:00:00
+#SBATCH --mem 8G --ntasks 8 --nodes 1 -J bwa.Afum --out logs/Afum.bwa_novogene.%A_%a.log --time 8:00:00
 
 module load bwa/0.7.15
 module unload java
@@ -53,9 +53,10 @@ do
 	bwa mem -t $CPU -R "@RG\tID:$STRAIN\tSM:$STRAIN\tLB:$PREFIX\tPL:illumina\tCN:$CENTER" $GENOME $PAIR1 $PAIR2 > $SAMFILE
    fi 
    if [ ! -f $OUTDIR/${STRAIN}.PE.bam ]; then
-	samtools fixmate -O bam $SAMFILE $TEMP/${STRAIN}.fixmate.bam
-	samtools sort -O bam -o  $OUTDIR/${STRAIN}.PE.bam -T $TEMP $TEMP/${STRAIN}.fixmate.bam
+	samtools fixmate --threads $CPU -O bam $SAMFILE $TEMP/${STRAIN}.fixmate.bam
+	samtools sort --threads $CPU -O bam -o  $OUTDIR/${STRAIN}.PE.bam -T $TEMP $TEMP/${STRAIN}.fixmate.bam
 	/usr/bin/rm $TEMP/${STRAIN}.fixmate.bam
+        /usr/bin/rm $SAMFILE
    fi
  fi
 done

@@ -9,7 +9,7 @@ module load picard
 
 GENOME=genome/Af293
 GENOMESTRAIN=Af293
-INDIR=input
+INDIR=input/SRA
 TOPOUTDIR=aln
 mkdir -p $TOPOUTDIR
 
@@ -56,7 +56,7 @@ do
    if [ ! -f $OUTDIR/${RUN}.PE.bam ]; then
 	samtools fixmate -O bam $SAMFILE $TEMP/${RUN}.fixmate.bam
 	samtools sort -O bam -o  $OUTDIR/${RUN}.PE.bam -T $TEMP $TEMP/${RUN}.fixmate.bam
-	/usr/bin/rm $TEMP/${RUN}.fixmate.bam
+	/usr/bin/rm $TEMP/${RUN}.fixmate.bam $SAMFILE
    fi
   elif [ -e $SINGLE ]; then
    SAMFILE=$OUTDIR/${RUN}.SE.unsrt.sam
@@ -67,7 +67,7 @@ do
    if [ ! -f $OUTDIR/${RUN}.SE.bam ]; then
 	samtools view -b $SAMFILE > $TEMP/${RUN}.unsrt.bam	
 	samtools sort -O bam -o $OUTDIR/${RUN}.SE.bam -T $TEMP $TEMP/${RUN}.unsrt.bam
-	/usr/bin/rm $TEMP/${RUN}.unsrt.bam
+	/usr/bin/rm $TEMP/${RUN}.unsrt.bam $SAMFILE
    fi
   else
       echo "NO $PAIR1 and no $SINGLE?"
