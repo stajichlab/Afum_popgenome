@@ -11,7 +11,7 @@ GENOME=genome/Af293.fasta
 OUTDIR=Variants
 mkdir -p $OUTDIR
 INDIR=gvcf
-OUT=$OUTDIR/A_fumigiatus_Af293.Popgen1.vcf
+OUT=$OUTDIR/A_fumigiatus_Af293.Popgen2.vcf
 
 CPU=$SLURM_CPUS_ON_NODE
 

@@ -12,15 +12,16 @@ INDIR=Variants
 OUTDIR=Variants_filter
 GENOME=genome/Af293.fasta
 mkdir -p $OUTDIR
-for PREFIX in A_fumigiatus_Af293.Popgen1
+for PREFIX in A_fumigiatus_Af293.Popgen1 A_fumigiatus_Af293.Popgen2
 do
- INFILE=$INDIR/$PREFIX.vcf
- INSNP=$OUTDIR/$PREFIX.SNP.vcf
- ININDEL=$OUTDIR/$PREFIX.INDEL.vcf
- FILTEREDSNP=$OUTDIR/$PREFIX.filtered.SNP.vcf
- FILTEREDINDEL=$OUTDIR/$PREFIX.filtered.INDEL.vcf
- SNPONLY=$OUTDIR/$PREFIX.selected.SNP.vcf
- INDELONLY=$OUTDIR/$PREFIX.selected.INDEL.vcf
+    echo $PREFIX
+    INFILE=$INDIR/$PREFIX.vcf
+    INSNP=$OUTDIR/$PREFIX.SNP.vcf
+    ININDEL=$OUTDIR/$PREFIX.INDEL.vcf
+    FILTEREDSNP=$OUTDIR/$PREFIX.filtered.SNP.vcf
+    FILTEREDINDEL=$OUTDIR/$PREFIX.filtered.INDEL.vcf
+    SNPONLY=$OUTDIR/$PREFIX.selected.SNP.vcf
+    INDELONLY=$OUTDIR/$PREFIX.selected.INDEL.vcf
 
  if [ ! -f $INSNP ]; then
   java -Xmx3g -jar $GATK \
