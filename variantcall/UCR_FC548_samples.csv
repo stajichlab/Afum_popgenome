@@ -1,0 +1,3 @@
+ID,Strain,File1,File2,Barcode,Desc
+WT_Af293_1,Af293,flowcell548_lane1_pair1_CTTGTA.fastq.gz,flowcell548_lane1_pair2_CTTGTA.fastq.gz,CTTGTA,"Af293 Wildtype"
+EVOL20_3_1,EVOL20_3,flowcell548_lane1_pair1_GTGAAA.fastq.gz,flowcell548_lane1_pair2_GTGAAA.fastq.gz,GTGAAA,"EVOL20_3"
