@@ -11,6 +11,7 @@ module load java/8
 INDIR=Variants
 OUTDIR=Variants_filter
 GENOME=genome/Af293.fasta
+
 mkdir -p $OUTDIR
 for PREFIX in A_fumigiatus_Af293.Popgen1 A_fumigiatus_Af293.Popgen2
 do

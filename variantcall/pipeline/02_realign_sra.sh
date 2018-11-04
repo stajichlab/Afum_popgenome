@@ -5,7 +5,6 @@ module unload java
 module load java/8
 module load gatk/3.7
 module load picard
-module load samtools
 
 MEM=64g
 GENOMEIDX=genome/Af293.fasta
@@ -59,17 +58,17 @@ do
  echo "SAMPLE=$SAMPLE"
  if [ ! -f $FINALBAMDIR/$SAMPLEORIG.bam ]; then
   if [ ! -f $BAMDIR/$SAMPLE.DD.bam ]; then
-    time java -jar $PICARD MarkDuplicates I=$BAMDIR/$SAMPLE.bam O=$BAMDIR/$SAMPLE.DD.bam METRICS_FILE=logs/$SAMPLE.$LANE.dedup.metrics CREATE_INDEX=true VALIDATION_STRINGENCY=SILENT
+    time picard MarkDuplicates I=$BAMDIR/$SAMPLE.bam O=$BAMDIR/$SAMPLE.DD.bam METRICS_FILE=logs/$SAMPLE.$LANE.dedup.metrics CREATE_INDEX=true VALIDATION_STRINGENCY=SILENT
   fi
   if [ ! -f $BAMDIR/$SAMPLE.DD.bai ]; then
-    time java -jar $PICARD BuildBamIndex I=$BAMDIR/$SAMPLE.DD.bam TMP_DIR=/scratch
+    time picard BuildBamIndex I=$BAMDIR/$SAMPLE.DD.bam TMP_DIR=/scratch
   fi
   if [ ! -f $BAMDIR/$SAMPLE.intervals ]; then 
-   time java -Xmx$MEM -jar $GATK \
-     -T RealignerTargetCreator \
-     -R $GENOMEIDX \
-     -I $BAMDIR/$SAMPLE.DD.bam \
-     -o $BAMDIR/$SAMPLE.intervals
+      time java -Xmx$MEM -jar $GATK \
+	  -T RealignerTargetCreator \
+	  -R $GENOMEIDX \
+	  -I $BAMDIR/$SAMPLE.DD.bam \
+	  -output $BAMDIR/$SAMPLE.intervals
   fi
   time java -Xmx$MEM -jar $GATK \
       -T IndelRealigner \
@@ -79,6 +78,8 @@ do
       -o $BAMDIR/$SAMPLE.realign.bam
 
   mv $BAMDIR/$SAMPLE.realign.bam $FINALBAMDIR/$SAMPLEORIG.bam
+  mv $BAMDIR/$SAMPLE.realign.bai $FINALBAMDIR/$SAMPLEORIG.bai
+  echo unlink $BAMDIR/$SAMPLE.DD.bam
  fi
  if [ ! -f $FINALBAMDIR/$SAMPLEORIG.bai ]; then
     time java -jar $PICARD BuildBamIndex I=$FINALBAMDIR/$SAMPLEORIG.bam TMP_DIR=$TEMP

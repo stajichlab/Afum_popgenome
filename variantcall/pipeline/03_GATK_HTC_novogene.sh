@@ -5,6 +5,7 @@ module unload java
 module load java/8
 module load gatk/3.8
 module load picard
+module load tabix
 
 MEM=32g
 GENOMEIDX=genome/Af293.fasta
@@ -51,6 +52,7 @@ do
   echo "Cannot find $SAMPLE.bam in $BAMDIR"
   exit
  fi
+ if [ ! -f $OUTDIR/$SAMPLE.g.vcf.gz ]; then
  if [ ! -f $OUTDIR/$SAMPLE.g.vcf ]; then
   java -Xmx${MEM} -jar $GATK \
   -T HaplotypeCaller \
@@ -59,5 +61,8 @@ do
   -I $BAMFILE -R $GENOMEIDX \
   -forceActive -disableOptimizations \
   -o $OUTDIR/$SAMPLE.g.vcf -nct $CPU
+ fi
+ bgzip $OUTDIR/$SAMPLE.g.vcf
+ tabix $OUTDIR/$SAMPLE.g.vcf.gz
  fi
 done
