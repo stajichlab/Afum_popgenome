@@ -5,7 +5,7 @@
 #SBATCH --job-name=GATK.select_filter
 #SBATCH --output=logs/GATK.select_filter.log
 
-module load gatk/4.0.4.0
+module load gatk/4.0.8.1
 module unload java
 module load java/8
 hostname
@@ -24,21 +24,19 @@ if [ -z $FINALVCF ]; then
 	echo "Need FINALVCF for output"
 	exit
 fi
-for INFILE in $(ls $FINALVCF/*.Run?.all.vcf.gz);
-do
-	PREFIX=$(basename $INFILE .all.vcf.gz)
-    echo "$PREFIX $INFILE"
-    INSNP=$FINALVCF/$PREFIX.SNP.vcf
-    ININDEL=$FINALVCF/$PREFIX.INDEL.vcf
-    FILTEREDSNP=$FINALVCF/$PREFIX.filtered.SNP.vcf
-    FILTEREDINDEL=$FINALVCF/$PREFIX.filtered.INDEL.vcf
-    SNPONLY=$FINALVCF/$PREFIX.selected.SNP.vcf
-    INDELONLY=$FINALVCF/$PREFIX.selected.INDEL.vcf
+echo "$PREFIX $INFILE"
+INFILE=$FINALVCF/$PREFIX.all.vcf.gz
+INSNP=$FINALVCF/$PREFIX.SNP.vcf
+ININDEL=$FINALVCF/$PREFIX.INDEL.vcf
+FILTEREDSNP=$FINALVCF/$PREFIX.filtered.SNP.vcf
+FILTEREDINDEL=$FINALVCF/$PREFIX.filtered.INDEL.vcf
+SNPONLY=$FINALVCF/$PREFIX.selected.SNP.vcf
+INDELONLY=$FINALVCF/$PREFIX.selected.INDEL.vcf
 
-    FILTEREDFIXEDSNP=$FINALVCF/$PREFIX.filteredfixed.SNP.vcf
-    FILTEREDFIXEDINDEL=$FINALVCF/$PREFIX.filteredfixed.INDEL.vcf
-    SNPNOFIXED=$FINALVCF/$PREFIX.selected_nofixed.SNP.vcf
-    INDELNOFIXED=$FINALVCF/$PREFIX.selected_nofixed.INDEL.vcf
+FILTEREDFIXEDSNP=$FINALVCF/$PREFIX.filteredfixed.SNP.vcf
+FILTEREDFIXEDINDEL=$FINALVCF/$PREFIX.filteredfixed.INDEL.vcf
+SNPNOFIXED=$FINALVCF/$PREFIX.selected_nofixed.SNP.vcf
+INDELNOFIXED=$FINALVCF/$PREFIX.selected_nofixed.INDEL.vcf
 
 
  if [ ! -f $INSNP ]; then
@@ -137,4 +135,3 @@ do
 	 --exclude-filtered
 
  fi
-done

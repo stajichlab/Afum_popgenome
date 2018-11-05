@@ -46,7 +46,8 @@ if [ ! -e $SNPEFFOUT/$snpEffConfig ]; then
 	java -Xmx$MEM -jar $SNPEFFJAR build -datadir `pwd`/$SNPEFFOUT/data -c $SNPEFFOUT/$snpEffConfig -gff3 -v $SNPEFFGENOME
 fi
 pushd $SNPEFFOUT
-COMBVCF="../$FINALVCF/$PREFIX.selected_nofixed.SNP.vcf.gz ../$FINALVCF/$PREFIX.selected_nofixed.INDEL.vcf.gz"
+#COMBVCF="../$FINALVCF/$PREFIX.selected_nofixed.SNP.vcf.gz ../$FINALVCF/$PREFIX.selected_nofixed.INDEL.vcf.gz"
+COMBVCF="../$FINALVCF/$PREFIX.selected.SNP.vcf.gz ../$FINALVCF/$PREFIX.selected.INDEL.vcf.gz"
 INVCF=$PREFIX.comb_selected.SNP.vcf
 OUTVCF=$PREFIX.snpEff.vcf
 OUTTAB=$PREFIX.snpEff.tab
