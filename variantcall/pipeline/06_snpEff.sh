@@ -2,6 +2,8 @@
 #SBATCH --mem=16G --nodes 1 --ntasks 2 --out logs/snpEff.log
 
 module load snpEff
+module load bcftools/1.9
+
 SNPEFFOUT=snpEff
 SNPEFFGENOME=AfumigatusAf293_FungiDB_39
 snpEffConfig=snpEff.config
@@ -44,7 +46,11 @@ if [ ! -e $SNPEFFOUT/$snpEffConfig ]; then
 	java -Xmx$MEM -jar $SNPEFFJAR build -datadir `pwd`/$SNPEFFOUT/data -c $SNPEFFOUT/$snpEffConfig -gff3 -v $SNPEFFGENOME
 fi
 pushd $SNPEFFOUT
-INVCF=../$FINALVCF/$PREFIX.selected.SNP.vcf
+COMBVCF="../$FINALVCF/$PREFIX.selected_nofixed.SNP.vcf.gz ../$FINALVCF/$PREFIX.selected_nofixed.INDEL.vcf.gz"
+INVCF=$PREFIX.comb_selected.SNP.vcf
 OUTVCF=$PREFIX.snpEff.vcf
-
+OUTTAB=$PREFIX.snpEff.tab
+bcftools concat -a -d both -o $INVCF -O v $COMBVCF
 java -Xmx$MEM -jar $SNPEFFJAR eff -dataDir `pwd`/data -v $SNPEFFGENOME $INVCF > $OUTVCF
+
+bcftools query -H -f '%CHROM\t%POS\t%REF\t%ALT{0}[\t%TGT]\t%INFO/ANN\n' $OUTVCF > $OUTTAB
