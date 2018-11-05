@@ -1,5 +1,5 @@
 #!/bin/bash
-#SBATCH --mem 2G --ntasks 8 --nodes 1 -p batch -J prefetch  --out fetch.%A_%a.log
+#SBATCH --mem 2G --ntasks 1 --nodes 1 -p batch -J fetch --out logs/fetch.%A_%a.log
 
 module load aspera
 module load sratoolkit
@@ -7,30 +7,29 @@ module load sratoolkit
 ASCP=$(which ascp)
 OUTDIR=fastq
 
+if [ ! -e ~/ncbi ]; then
+	pushd ~/
+	mkdir -p /scratch/$USER/cache
+	ln -s /scratch/$USER/cache ncbi
+	popd
+fi
+
 mkdir -p $OUTDIR
 N=1
-if [ ${SLURM_ARRAY_TASK_ID} ]; then
+if [ ! -z ${SLURM_ARRAY_TASK_ID} ]; then
  N=${SLURM_ARRAY_TASK_ID}
-elif [ "$1" != "" ]; then
+elif [ ! -z $1 ]; then
  N=$1
 fi
 
-FILE=$(ls runs/*.tab | sed -n ${N}p)
-
-RunCol=$(head -n 1 $FILE | awk -F'\t' ' {
-      for(i=1;i < NF;i++) {
-         if($i ~ /Run/) { print i }
-      }
-}')
-
-RUNME=""
-tail -n +2 $FILE | cut -f${RunCol} | while read SRARUN 
+SRA=sra_samples.tsv
+tail -n +2 $SRA | sed -n ${N}p | cut -f1 | while read SRARUN
 do
- echo "$SRARUN fetching"
- prefetch -a "$ASCP|$ASPERAKEY" --ascp-options "-k1 -Tr -l800m" $SRARUN
+# echo "$SRARUN fetching"
  if [ ! -f $OUTDIR/${SRARUN}_1.fastq.gz ]; then
-  echo $RUNME
+# prefetch -a "$ASCP|$ASPERAKEY" --ascp-options "-k1 -Tr -l800m" $SRARUN
+	echo "($N) $SRARUN"
+	fastq-dump $SRARUN --gzip --split-files --qual-filter-1 -O $OUTDIR
+
  fi
 done
-
-#echo $RUNME | parallel -j 8 fastq-dump {} --gzip --split-files --qual-filter-1 -O $OUTDIR

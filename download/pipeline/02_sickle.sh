@@ -6,51 +6,18 @@ INPUT=fastq
 OUTPUT=trim
 LEN=30
 QUAL=20
-if [ ! $TEMPDIR ]; then
- TEMPDIR=/tmp
-fi
- 
-mydir=$(mktemp -dt XXXXXXXXXXXX)
-if [ ! -d $mydir ]; then 
- echo "cannot create tempdir"
- exit
-fi
-
-function finish {
-  rm -rf "$mydir"
-}
-trap finish EXIT
-
-ALLACC=$mydir/all_SRA_acc.tab
-rm -f $ALLACC
-touch $ALLACC
-
-for f in runs/*.tab
-do
- RunCol=$(head -n 1 $f | awk -F'\t' ' {
-      for(i=1;i < NF;i++) {
-         if($i ~ /Run/) { print i }
-      }
-}')
- tail -n +2 $f | cut -f${RunCol} | while read SRARUN
- do
-  echo $SRARUN >> $ALLACC
- done
-done
-acccount=$(wc -l $ALLACC | awk '{print $1}')
-
-
 N=${SLURM_ARRAY_TASK_ID}
-if [ ! $N ]; then
+if [ -z $N ]; then
  N=$1
+ if [ -z $N ]; then
+  echo "need a num from --array or cmdline"
+  exit
+ fi
 fi
 
-if [ ! $N ]; then
- echo "need a num from --array or cmdline"
- exit
-fi
-BASE=$(sed -n ${N}p $ALLACC)
-
+tail -n +2 $SRA | sed -n ${N}p | cut -f1 | while read SRARUN
+do
+BASE=$SRARUN
 FILE1=$INPUT/$BASE"_1.fastq.gz"
 FILE2=$INPUT/$BASE"_2.fastq.gz"
 OUTFILE1=$OUTPUT/$BASE.1.trim.fq
@@ -70,4 +37,4 @@ if [ ! -f $OUTFILE1.gz ]; then
   pigz $OUTFILES
  fi
 fi
-
+done

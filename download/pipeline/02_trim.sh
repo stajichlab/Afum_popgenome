@@ -1,5 +1,5 @@
 #!/bin/bash
-#SBATCH --ntasks 2 --nodes 1 --mem 24G --time 4:00:00  -J trimmomatic --out logs/trimmomatic.%A_%a.log
+#SBATCH --ntasks 4 --nodes 1 --mem 24G --time 4:00:00  -J trimmomatic --out logs/trimmomatic.%A_%a.log
 CPU=2
 module load trimmomatic
 
