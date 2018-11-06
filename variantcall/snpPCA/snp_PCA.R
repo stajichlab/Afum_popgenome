@@ -5,7 +5,10 @@ vcf.fn <- "A_fumigiatus_Af293.Popgen2.selected.SNP.vcf.gz"
 
 if(!file.exists(gdsfile)){
 	snpgdsVCF2GDS_R(vcf.fn, gdsfile,method="biallelic.only",
-	                option=snpgdsOption(CM002236=1,CM002237=2,CM002238=3,CM002239=4,CM002240=5,CM002241=6,CM002242=7))
+	                option=snpgdsOption(Chr1_A_fumigatus_Af293=1,Chr2_A_fumigatus_Af293=2,
+	                                    Chr3_A_fumigatus_Af293=3,Chr4_A_fumigatus_Af293=4,
+	                                    Chr5_A_fumigatus_Af293=5,Chr6_A_fumigatus_Af293=6,
+	                                    Chr7_A_fumigatus_Af293=7,mito_A_fumigatus_Af293='M'))
 }
 
 snpgdsSummary(gdsfile)
