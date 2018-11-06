@@ -48,6 +48,7 @@ snpgdsDrawTree(rv, main="Afum Popset2 Strains",
 
 table(rv$samp.group)
 df <- data.frame(
+  sample_id = pca$sample.id,
            pop       = rv$samp.group)
 rownames(df) = pca$sample.id
 write.csv(df,"Afum.popset_inferred.tab")
@@ -60,6 +61,9 @@ plot(tab$EV2, tab$EV1,
      col=as.integer(tab$pop),
      xlab="eigenvector 2", ylab="eigenvector 1", main="PCA SNP plot")
 
+library(MASS)
+parcoord(pca$eigenvect[,1:16], col=rv$samp.group)
+
 CORRSNP <- snpgdsPCACorr(pca, genofile, eig.which=1:4,num.thread=2)
 
 savepar <- par(mfrow=c(3,1), mai=c(0.3, 0.55, 0.1, 0.25))
@@ -68,4 +72,5 @@ for (i in 1:3)
   plot(abs(CORRSNP$snpcorr[i,]), ylim=c(0,1), xlab="", ylab=paste("PC", i),
        col=factor(chr), pch="+")
 }
+par(savepar)
 
