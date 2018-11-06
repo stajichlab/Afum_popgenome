@@ -10,6 +10,9 @@ if(!file.exists(gdsfile)){
 
 snpgdsSummary(gdsfile)
 genofile <- snpgdsOpen(gdsfile)
+chroms <- read.gdsn(index.gdsn(genofile,"snp.chromosome"))
+chr <- strtoi(sub("_A_fumigatus_Af293","",chroms,perl=TRUE))
+chr <- strtoi(sub("Chr","",chr,perl=TRUE))
 
 pca <- snpgdsPCA(genofile,num.thread=2,autosome.only=FALSE)
 
@@ -41,9 +44,10 @@ snpgdsDrawTree(rv, main="Afum Popset2 Strains",
                edgePar=list(col=rgb(0.5,0.5,0.5, 0.75), t.col="black"))
 
 table(rv$samp.group)
-df <- data.frame(sample_id = pca$sample.id,
+df <- data.frame(
            pop       = rv$samp.group)
-write.table(df,"Afum.popset_inferred.tab")
+rownames(df) = pca$sample.id
+write.csv(df,"Afum.popset_inferred.tab")
 tab <- data.frame(sample.id = pca$sample.id,
                   pop = rv$samp.group,
                   EV1=pca$eigenvect[,1], # PCA vector 1
