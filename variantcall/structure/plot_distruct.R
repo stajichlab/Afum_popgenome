@@ -18,11 +18,13 @@ clist <- list(
 "wong"=c("#000000","#E69F00","#56B4E9","#009E73","#F0E442","#006699","#D55E00","#CC79A7"),
 "krzywinski"=c("#006E82","#8214A0","#005AC8","#00A0FA","#FA78FA","#14D2DC","#AA0A3C","#FA7850","#0AB45A","#F0F032","#A0FA82","#FAE6BE"))
 
-group <- read.csv("Afum.popset_inferred.tab",sep="\t", header=T,stringsAsFactors = F)
+group <- read.csv("Afum.popset_inferred.tab",sep=",", header=T,stringsAsFactors = F)
 onelabsetrep <- group[,2,drop=FALSE]
 colnames(group) <- c("Strain","GroupAssign")
-inds <- read.table("Afum.Run2.popset",header=FALSE,stringsAsFactors=F)
-#inds$V1
+
+inds <- read.table("AfumAf293.Run2.popset.update",sep="\t",header=FALSE,stringsAsFactors=F)
+
+
 ffiles <- list.files(path=".",pattern="*.meanQ",full.names=T)
 flist <- readQ(files=ffiles)
 
@@ -34,7 +36,7 @@ if(length(unique(sapply(flist,nrow)))==1) flist <- lapply(flist,"rownames<-",ind
 tr1 <- tabulateQ(qlist=flist)
 summariseQ(tr1, writetable=TRUE)
 plotQ(flist,
-            imgoutput="join",returnplot=T,exportplot=T,linesize=0.8,pointsize=4,
+            imgoutput="join",returnplot=F,exportplot=T,linesize=0.8,pointsize=4,
             quiet=T,basesize=8,showlegend=T,sortind="Cluster1",sharedindlab=F,
             clustercol=clist$shiny,splab=paste0("K=",sapply(flist,ncol)),
             outputfilename="Afum.Run2.joinedplot",imgtype="pdf",
@@ -42,11 +44,11 @@ plotQ(flist,
             width=100)
 
 
-plotQ(flist[c(5)],returnplot=T,exportplot=T,quiet=T,basesize=8,ordergrp=T,
+plotQ(flist[c(5)],returnplot=F,exportplot=T,quiet=T,basesize=8,ordergrp=T,
             grplab=onelabsetrep,grplabsize=4,linesize=0.8,pointsize=3,outputfilename="Afum.Run2.K6", imgtype="pdf",
             sharedindlab=F,showindlab=F,width=100)
 
-plotQ(flist[c(4:8)],imgoutput="join",returnplot=T,exportplot=T,quiet=T,basesize=8,ordergrp=T,
+plotQ(flist[c(4:8)],imgoutput="join",returnplot=F,exportplot=T,quiet=T,basesize=8,ordergrp=T,
       grplab=onelabsetrep,grplabsize=3,linesize=0.8,pointsize=3,outputfilename="Afum.Run2.combined.groups", imgtype="pdf",
       sharedindlab=F,showindlab=F,width=100)
 
@@ -56,22 +58,22 @@ p <- plotQMultiline(flist[2], returnplot=T,spl=100,useindlab=T,grplab=onelabsetr
                outputfilename="Afum.Run2.joined_multiline.K_3")
 #grid.arrange(p$plot[[1]][[1]])
 
-p <- plotQMultiline(flist[3], returnplot=T,spl=100,useindlab=T,showlegend=T,
+p <- plotQMultiline(flist[3], returnplot=F,spl=100,useindlab=T,showlegend=T,
                imgtype="pdf",exportplot=T,sortind="Cluster1",grplab=onelabsetrep,grplabsize=3,ordergrp=T,
                outputfilename="Afum.Run2.joined_multiline.K_4")
-p <- plotQMultiline(flist[4], returnplot=T,spl=100,useindlab=T,showlegend=T,
+p <- plotQMultiline(flist[4], returnplot=F,spl=100,useindlab=T,showlegend=T,
                     imgtype="pdf",exportplot=T,sortind="Cluster1",grplab=onelabsetrep,grplabsize=3,ordergrp=T,
                     outputfilename="Afum.Run2.joined_multiline.K_5")
-p <- plotQMultiline(flist[5], returnplot=T,spl=100,useindlab=T,showlegend=T,
+p <- plotQMultiline(flist[5], returnplot=F,spl=100,useindlab=T,showlegend=T,
                     imgtype="pdf",exportplot=T,sortind="Cluster1",grplab=onelabsetrep,grplabsize=3,ordergrp=T,
                     outputfilename="Afum.Run2.joined_multiline.K_6")
-p <- plotQMultiline(flist[6], returnplot=T,spl=100,useindlab=T,showlegend=T,
+p <- plotQMultiline(flist[6], returnplot=F,spl=100,useindlab=T,showlegend=T,
                     imgtype="pdf",exportplot=T,sortind="Cluster1",grplab=onelabsetrep,grplabsize=3,ordergrp=T,
                     outputfilename="Afum.Run2.joined_multiline.K_7")
-p <- plotQMultiline(flist[7], returnplot=T,spl=100,useindlab=T,showlegend=T,
+p <- plotQMultiline(flist[7], returnplot=F,spl=100,useindlab=T,showlegend=T,
                     imgtype="pdf",exportplot=T,sortind="Cluster1",grplab=onelabsetrep,grplabsize=3,ordergrp=T,
                     outputfilename="Afum.Run2.joined_multiline.K_8")
-p <- plotQMultiline(flist[8], returnplot=T,spl=100,useindlab=T,showlegend=T,
+p <- plotQMultiline(flist[8], returnplot=F,spl=100,useindlab=T,showlegend=T,
                     imgtype="pdf",exportplot=T,sortind="Cluster1",grplab=onelabsetrep,grplabsize=3,ordergrp=T,
                     outputfilename="Afum.Run2.joined_multiline.K_9")
 
