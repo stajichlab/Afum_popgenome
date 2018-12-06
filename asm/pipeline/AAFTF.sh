@@ -60,7 +60,7 @@ if [ ! -f $ASMFILE ]; then
 	fi
     fi
     AAFTF assemble -c $CPU --left $LEFT --right $RIGHT  --memory $MEM \
-	-o $ASMFILE -w $WORKDIR/spades_$BASE --spades_tmpdir /scratch/$USER/$SLURM_JOBID
+	-o $ASMFILE -w $WORKDIR/spades_$BASE --spades_tmpdir /scratch/$USER
     
     if [ -s $ASMFILE ]; then
 	rm -rf $WORKDIR/spades_${BASE}/K?? $WORKDIR/spades_${BASE}/tmp
