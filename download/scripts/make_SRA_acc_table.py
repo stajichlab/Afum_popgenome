@@ -68,7 +68,7 @@ for f in files:
 
 
 with open('sra_samples.tsv', 'w') as tsvfile:
-    writer = csv.writer(tsvfile,delimiter="\t",quoting=csv.QUOTE_MINIMAL)
+    writer = csv.writer(tsvfile,delimiter="\t",quoting=csv.QUOTE_MINIMAL,lineterminator='\n')
     writer.writerow(["RunAcc","Strain","BioSample",
                      "Center","Experiment","Project"])
     for srarun in sorted(sratable):
