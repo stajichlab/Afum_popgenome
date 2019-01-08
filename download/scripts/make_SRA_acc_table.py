@@ -32,6 +32,8 @@ for f in files:
                 Center = "Vanderbilt"
             elif Project == "PRJNA319359":
                 Center = "JPL"
+            elif Project == "PRJNA477519":
+                Center = "ICIII"
 
             Library = ""
             if "Library_Name" in headerdict:

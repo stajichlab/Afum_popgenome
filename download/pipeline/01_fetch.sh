@@ -6,12 +6,9 @@ module load sratoolkit
 
 ASCP=$(which ascp)
 OUTDIR=fastq
-
+mkdir -p /scratch/$USER/cache
 if [ ! -e ~/ncbi ]; then
-	pushd ~/
-	mkdir -p /scratch/$USER/cache
-	ln -s /scratch/$USER/cache ncbi
-	popd
+	ln -s /scratch/$USER/cache ~/ncbi
 fi
 
 mkdir -p $OUTDIR
@@ -29,7 +26,7 @@ do
  if [ ! -f $OUTDIR/${SRARUN}_1.fastq.gz ]; then
 # prefetch -a "$ASCP|$ASPERAKEY" --ascp-options "-k1 -Tr -l800m" $SRARUN
 	echo "($N) $SRARUN"
-	fastq-dump $SRARUN --gzip --split-files --qual-filter-1 -O $OUTDIR
+	fastq-dump $SRARUN --gzip --split-files -O $OUTDIR
 
  fi
 done
