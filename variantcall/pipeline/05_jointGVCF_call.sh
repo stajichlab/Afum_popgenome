@@ -39,5 +39,5 @@ if [ ! -f $OUT.gz ]; then
     -nt $CPU
   fi
   bgzip $OUT
-  tabix $OUT
+  tabix $OUT.gz
 fi

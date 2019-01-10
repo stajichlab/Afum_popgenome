@@ -1,23 +1,39 @@
 #!/usr/bin/bash
 #SBATCH --mem 8G --ntasks 8 --nodes 1 -J bwa.Afum
 #SBATCH --out logs/Afum_sra.bwa.%A_%a.log --time 8:00:00
-
 module load bwa/0.7.17
+module unload java
+module load java/8
+module load picard
+module load gatk/3.7
 
+MEM=24g
+CENTER=Novogene
 GENOME=genome/Af293
 GENOMESTRAIN=Af293
+GENOMEIDX=$GENOME.fasta
+REFGENOME=genome/FungiDB-39_AfumigatusAf293_Genome.fasta
 INDIR=input/SRA
 TOPOUTDIR=aln
+ALNFOLDER=bam
+HTCEXT=cram
+HTCFORMAT=cram
+SAMPFILE=SRA_samples.csv
+
+if [ -f config.txt ]; then
+    source config.txt
+fi
 mkdir -p $TOPOUTDIR
 
 TEMP=/scratch
+
 N=${SLURM_ARRAY_TASK_ID}
 CPU=1
 if [ $SLURM_CPUS_ON_NODE ]; then 
  CPU=$SLURM_CPUS_ON_NODE
 fi
 
-SAMPFILE=SRA_samples.csv
+
 if [ -z $N ]; then
  N=$1
 fi
@@ -37,30 +53,59 @@ fi
 IFS=,
 tail -n +2 $SAMPFILE | sed -n ${N}p | while read RUN STRAIN SAMPLE CENTER EXP PROJ
 do
-  OUTDIR=$TOPOUTDIR
   PAIR1=$INDIR/${RUN}_1.fastq.gz
   PAIR2=$INDIR/${RUN}_2.fastq.gz
-  
-  SAMFILE=NULL
-   
-  if [ -e $PAIR1 ]; then      
-   SAMFILE=$OUTDIR/${RUN}.PE.unsrt.sam
-   echo "SAMFILE is $SAMFILE"
-   if [ ! -f $SAMFILE ]; then
-	bwa mem -t $CPU -R "@RG\tID:$STRAIN\tSM:$SAMPLE\tLB:$RUN\tPL:illumina\tCN:$CENTER" $GENOME $PAIR1 $PAIR2 > $SAMFILE
-   fi 
-   if [ ! -f $OUTDIR/${RUN}.PE.bam ]; then
-	samtools fixmate -@ $CPU -O bam $SAMFILE $TEMP/${RUN}.fixmate.bam
-	samtools sort -@ $CPU -O bam -o  $OUTDIR/${RUN}.PE.bam -T $TEMP $TEMP/${RUN}.fixmate.bam
-	unlink $TEMP/${RUN}.fixmate.bam $SAMFILE
-   fi
-  elif [ -e $SINGLE ]; then
-   SAMFILE=$OUTDIR/${RUN}.SE.unsrt.sam
-   echo "SAMFILE is $SAMFILE"
-   if [ ! -f $OUTDIR/${RUN}.SE.bam ]; then
-    	bwa mem -t $CPU -R "@RG\tID:$STRAIN\tSM:$SAMPLE\tLB:$RUN\tPL:illumina\tCN:$CENTER" $GENOME $SINGLE | samtools sort -@ $CPU -O bam -T $TEMP -o $OUTDIR/${RUN}.SE.bam -
-   fi
-  else
-      echo "NO $PAIR1 and no $SINGLE?"
-  fi
+
+  SAMFILE=$TOPOUTDIR/$RUN.unsrt.sam
+  SRTED=$TOPOUTDIR/${RUN}.srt.bam
+  DDFILE=$TOPOUTDIR/${RUN}.DD.bam
+  REALIGN=$TOPOUTDIR/${RUN}.realign.bam
+  INTERVALS=$TOPOUTDIR/${RUN}.intervals
+  FINALFILE=$ALNFOLDER/${RUN}.$HTCEXT    
+  READGROUP="@RG\tID:$RUN\tSM:$STRAIN\tLB:$PREFIX\tPL:illumina\tCN:$CENTER"
+    
+  if [ ! -f $FINALFILE ]; then
+      if [ ! -f $DDFILE ]; then
+	  if [ ! -f $SRTED ]; then
+	      if [ -e $PAIR2 ]; then
+		  echo "RUNNING paired-end bwa"
+		  bwa mem -t $CPU -R $READGROUP $GENOME $PAIR1 $PAIR2 > $SAMFILE
+		  samtools fixmate --threads $CPU -O bam $SAMFILE $TEMP/${RUN}.fixmate.bam
+		  samtools sort --threads $CPU -O bam -o  $SRTED -T $TEMP $TEMP/${RUN}.fixmate.bam
+		  /usr/bin/rm $TEMP/${RUN}.fixmate.bam $SAMFILE
+	      elif [ -e $PAIR1 ]; then
+		  echo "RUNNING unpaired bwa"
+    		  bwa mem -t $CPU -R "@RG\tID:$RUN\tSM:$STRAIN\tLB:$RUN\tPL:illumina\tCN:$CENTER" $GENOME $PAIR1 | samtools sort -@ $CPU -O bam -T $TEMP -o $SRTED
+	      else
+		  echo "NO $PAIR1 and no $PAIR2?"
+		  exit
+	      fi
+	  fi # SRTED file exists or was created by this block
+	  time java -jar $PICARD MarkDuplicates I=$SRTED O=$DDFILE \
+	      METRICS_FILE=logs/$STRAIN.dedup.metrics CREATE_INDEX=true VALIDATION_STRINGENCY=SILENT
+	    
+      fi # DDFILE is created after this or already exists
+      
+      if [ ! -f $INTERVALS ]; then 
+	  time java -Xmx$MEM -jar $GATK \
+	      -T RealignerTargetCreator \
+	      -R $GENOMEIDX \
+	      -I $DDFILE \
+	      -o $INTERVALS
+      fi
+      if [ ! -f $REALIGN ]; then
+	  time java -Xmx$MEM -jar $GATK \
+	      -T IndelRealigner \
+	      -R $GENOMEIDX \
+	      -I $TOPOUTDIR/$STRAIN.DD.bam \
+	      -targetIntervals $INTERVALS \
+	      -o $REALIGN
+      fi
+      
+      samtools view -O $HTCFORMAT --threads $CPU --reference $REFGENOME -o $FINALFILE $REALIGN
+      samtools index $FINALFILE
+      if [ -f $FINALFILE ]; then
+	  rm -f $DDFILE $REALIGN
+      fi
+    fi #FINALFILE created or already exists  
 done
