@@ -1,6 +1,6 @@
 #!/usr/bin/bash
-#SBATCH --mem 24G --ntasks 8 --nodes 1 -J bwa.Afum
-#SBATCH --out logs/Afum_novogene.bwa.%a.log --time 8:00:00
+#SBATCH --mem 24G --ntasks 8 --nodes 1 -J Novogeneset
+#SBATCH --out logs/Novogene.%a.log --time 8:00:00
 
 module load bwa/0.7.17
 module unload java
@@ -100,17 +100,20 @@ do
 	    time java -Xmx$MEM -jar $GATK \
 		-T IndelRealigner \
 		-R $GENOMEIDX \
-		-I $TOPOUTDIR/$STRAIN.DD.bam \
+		-I $DDFILE \
 		-targetIntervals $INTERVALS \
 		-o $REALIGN
 	fi # REALIGN created or already existed
 	
-	samtools view -O $HTCFORMAT --threads $CPU --reference $REFGENOME -o $FINALFILE $REALIGN
+	samtools view -O $HTCFORMAT --threads $CPU \
+	    --reference $REFGENOME -o $FINALFILE $REALIGN
 	samtools index $FINALFILE
 
 	if [ -f $FINALFILE ]; then
 	    rm -f $DDFILE $REALIGN
-	    rm $(basename $REALIGN .bam)".bai"
+	    rm -f $(echo $REALIGN | sed 's/bam$/bai/')
+	    rm -f $(echo $DDFILE | sed 's/bam$/bai/')
+	    rm -f $INTERVALS
 	fi
     fi #FINALFILE created or already exists  
 done

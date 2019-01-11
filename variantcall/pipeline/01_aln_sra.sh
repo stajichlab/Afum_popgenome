@@ -1,6 +1,6 @@
 #!/usr/bin/bash
-#SBATCH --mem 8G --ntasks 8 --nodes 1 -J bwa.Afum
-#SBATCH --out logs/Afum_sra.bwa.%A_%a.log --time 8:00:00
+#SBATCH --mem 8G --ntasks 8 --nodes 1 -J sraAfum
+#SBATCH --out logs/Afum_sra.bwa.%a.log --time 8:00:00
 module load bwa/0.7.17
 module unload java
 module load java/8
@@ -81,9 +81,11 @@ do
 		  exit
 	      fi
 	  fi # SRTED file exists or was created by this block
-	  time java -jar $PICARD MarkDuplicates I=$SRTED O=$DDFILE \
+	  time picard MarkDuplicates I=$SRTED O=$DDFILE \
 	      METRICS_FILE=logs/$STRAIN.dedup.metrics CREATE_INDEX=true VALIDATION_STRINGENCY=SILENT
-	    
+	   if [ ! -f $DDFILE.bai ]; then
+		picard BuildBamIndex I=$DDFILE TMP_DIR=/scratch
+	   fi	    
       fi # DDFILE is created after this or already exists
       
       if [ ! -f $INTERVALS ]; then 
@@ -97,15 +99,19 @@ do
 	  time java -Xmx$MEM -jar $GATK \
 	      -T IndelRealigner \
 	      -R $GENOMEIDX \
-	      -I $TOPOUTDIR/$STRAIN.DD.bam \
+	      -I $DDFILE \
 	      -targetIntervals $INTERVALS \
 	      -o $REALIGN
       fi
       
-      samtools view -O $HTCFORMAT --threads $CPU --reference $REFGENOME -o $FINALFILE $REALIGN
+      samtools view -O $HTCFORMAT --threads $CPU \
+	  --reference $REFGENOME -o $FINALFILE $REALIGN
       samtools index $FINALFILE
       if [ -f $FINALFILE ]; then
 	  rm -f $DDFILE $REALIGN
+	  rm -f $(echo $REALIGN | sed 's/bam$/bai/')
+	  rm -f $(echo $DDFILE | sed 's/bam$/bai/')
+	  rm -f $INTERVALS
       fi
     fi #FINALFILE created or already exists  
 done
