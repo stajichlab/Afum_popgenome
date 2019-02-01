@@ -1,6 +1,6 @@
 #!/usr/bin/bash
 #SBATCH --mem 24G --ntasks 8 --nodes 1 -J Af100
-#SBATCH --out logs/f100.bwa.%a.log --time 8:00:00
+#SBATCH --out logs/AF100.bwa.%a.log --time 2:00:00 -p short
 
 module load bwa/0.7.17
 module unload java
@@ -10,21 +10,28 @@ module load samtools/1.9
 module load gatk/3.7
 
 MEM=24g
-GENOME=genome/Af293
 GENOMESTRAIN=Af293
-GENOMEIDX=$GENOME.fasta
-REFGENOME=genome/FungiDB-39_AfumigatusAf293_Genome.fasta
 INDIR=input
-TOPOUTDIR=aln
-ALNFOLDER=bam
+TOPOUTDIR=tmp
+ALNFOLDER=aln
 HTCEXT=cram
 HTCFORMAT=cram
+
 
 if [ -f config.txt ]; then
     source config.txt
 fi
+if [ -z $REFGENOME ]; then
+    echo "NEED A REFGENOME - set in config.txt and make sure 00_index.sh is run"
+    exit
+fi
+
+if [ ! -f $REFGENOME.dict ]; then
+    echo "NEED a $REFGENOME.dict - make sure 00_index.sh is run"
+fi
 
 mkdir -p $TOPOUTDIR
+SAMPFILE=Af100_samples.csv
 
 TEMP=/scratch
 N=${SLURM_ARRAY_TASK_ID}
@@ -33,7 +40,7 @@ if [ $SLURM_CPUS_ON_NODE ]; then
  CPU=$SLURM_CPUS_ON_NODE
 fi
 
-SAMPFILE=Af100_samples.csv
+
 if [ -z $N ]; then
  N=$1
 
@@ -77,8 +84,8 @@ do
 		    if [ -e $PAIR2 ]; then      	
 			echo "SAMFILE is $SAMFILE"
 			if [ ! -f $SAMFILE ]; then
-			    echo "bwa mem -t $CPU -R $READGROUP -o $SAMFILE $GENOME $PAIR1 $PAIR2"
-			    bwa mem -t $CPU -R $READGROUP -o $SAMFILE $GENOME $PAIR1 $PAIR2
+			    echo "bwa mem -t $CPU -R $READGROUP -o $SAMFILE $REFGENOME $PAIR1 $PAIR2"
+			    bwa mem -t $CPU -R $READGROUP -o $SAMFILE $REFGENOME $PAIR1 $PAIR2
 			fi 
 		    else
 			echo "Cannot find $PAIR2, skipping $STRAIN"
@@ -105,7 +112,7 @@ do
 	    if [ ! -f $INTERVALS ]; then 
 		time java -Xmx$MEM -jar $GATK \
 		    -T RealignerTargetCreator \
-		    -R $GENOMEIDX \
+		    -R $REFGENOME \
 		    -I $DDFILE \
 		    -o $INTERVALS
 	    fi
@@ -113,7 +120,7 @@ do
 	    if [ ! -f $REALIGN ]; then
 		time java -Xmx$MEM -jar $GATK \
 		    -T IndelRealigner \
-		    -R $GENOMEIDX \
+		    -R $REFGENOME \
 		    -I $DDFILE \
 		    -targetIntervals $INTERVALS \
 		    -o $REALIGN

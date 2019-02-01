@@ -1,5 +1,6 @@
 #!/usr/bin/bash
 #SBATCH -J GATK.HTC --out logs/GATK_HTC.%a.log --ntasks 8 --nodes 1 --mem 16G
+#SBATCH --time 3-0:0:0
 
 module unload java
 module load java/8
@@ -15,13 +16,17 @@ ALNFOLDER=aln
 VARIANTFOLDER=gvcf
 HTCFORMAT=cram #default but may switch back to bam
 HTCFOLDER=cram # default
+HTCEXT=cram
 if [ -f config.txt ]; then
     source config.txt
 fi
-GENOMEIDX=$GENOMEFOLDER/$GENOMEFASTA
+DICT=$(echo $REFGENOME | sed 's/fasta$/dict/')
 
+if [ ! -f $DICT ]; then
+	picard CreateSequenceDictionary R=$GENOMEIDX O=$DICT
+fi
 mkdir -p $VARIANTFOLDER
-
+TEMP=/scratch
 CPU=1
 if [ $SLURM_CPUS_ON_NODE ]; then
  CPU=$SLURM_CPUS_ON_NODE
@@ -58,12 +63,23 @@ if [ ! -e $ALNFILE ]; then
 fi
 if [ ! -f $VARIANTFOLDER/$SAMPLE.g.vcf.gz ]; then
     if [ ! -f $VARIANTFOLDER/$SAMPLE.g.vcf ]; then
-	java -Xmx${MEM} -jar $GATK \
+	# force HTCCALLER to work on BAM files due to some bugs
+	# in cram handling by GATK?
+	if [ $HTCFORMAT == "bam" ]; then
+	    BAM=$ALNFILE
+	else
+	    BAM=$TEMP/$(basename $ALNFILE .$HTCEXT)".bam"
+	fi    	    
+	time samtools view -O bam --threads $CPU \
+	    --reference $REFGENOME -o $BAM $ALNFILE
+	samtools index $BAM
+	time java -Xmx${MEM} -jar $GATK \
 	    -T HaplotypeCaller \
 	    -ERC GVCF \
 	    -ploidy 1 \
-	    -I $ALNFILE -R $GENOMEIDX \
+	    -I $BAM -R $REFGENOME \
 	    -o $VARIANTFOLDER/$SAMPLE.g.vcf -nct $CPU
+	unlink $BAM
     fi
     if [ -f $VARIANTFOLDER/$SAMPLE.g.vcf ]; then
 	bgzip $VARIANTFOLDER/$SAMPLE.g.vcf

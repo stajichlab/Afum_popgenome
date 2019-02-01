@@ -5,7 +5,7 @@
 #SBATCH --job-name=GATK.select_filter
 #SBATCH --output=logs/GATK.select_filter.log
 
-module load gatk/4.0.8.1
+module load gatk/4
 module unload java
 module load java/8
 hostname
@@ -41,7 +41,7 @@ INDELNOFIXED=$FINALVCF/$PREFIX.selected_nofixed.INDEL.vcf
 
  if [ ! -f $INSNP ]; then
   gatk SelectVariants \
-  -R $GENOME \
+  -R $REFGENOME \
   --variant $INFILE \
   -O $INSNP \
   --restrict-alleles-to BIALLELIC \
@@ -49,7 +49,7 @@ INDELNOFIXED=$FINALVCF/$PREFIX.selected_nofixed.INDEL.vcf
  fi
  if [ ! -f $ININDEL ]; then
   gatk SelectVariants \
-  -R $GENOME \
+  -R $REFGENOME \
   --variant $INFILE \
   --output $ININDEL \
   --select-type-to-include INDEL --select-type-to-include MIXED --select-type-to-include MNP
@@ -57,7 +57,7 @@ INDELNOFIXED=$FINALVCF/$PREFIX.selected_nofixed.INDEL.vcf
 
  if [ ! -f $FILTEREDSNP ]; then
    gatk VariantFiltration --output $FILTEREDSNP \
-   --variant $INSNP -R $GENOME \
+   --variant $INSNP -R $REFGENOME \
    --cluster-window-size 10  \
    --filter-expression "QD < 2.0" --filter-name QualByDepth \
    --filter-expression "MQ < 40.0" --filter-name MapQual \
@@ -71,9 +71,9 @@ INDELNOFIXED=$FINALVCF/$PREFIX.selected_nofixed.INDEL.vcf
 
  if [ ! -f $FILTEREDFIXEDSNP ]; then
    gatk VariantFiltration --output $FILTEREDFIXEDSNP \
-   --variant $INSNP -R $GENOME \
+   --variant $INSNP -R $REFGENOME \
    --cluster-window-size 10  \
-   --filter-expression "AF > 0.99" --filter-name FixedAllele \
+#   --filter-expression "AF > 0.99" --filter-name FixedAllele \
    --filter-expression "QD < 2.0" --filter-name QualByDepth \
    --filter-expression "MQ < 40.0" --filter-name MapQual \
    --filter-expression "QUAL < 100" --filter-name QScore \
@@ -86,7 +86,7 @@ INDELNOFIXED=$FINALVCF/$PREFIX.selected_nofixed.INDEL.vcf
  fi
  if [ ! -f $FILTEREDINDEL ]; then
   gatk VariantFiltration --output $FILTEREDINDEL \
-  --variant $ININDEL -R $GENOME \
+  --variant $ININDEL -R $REFGENOME \
   --cluster-window-size 10  -filter "QD < 2.0" --filter-name QualByDepth \
   -filter "MQRankSum < -12.5" --filter-name MapQualityRankSum \
   -filter "SOR > 4.0" --filter-name StrandOddsRatio \
@@ -97,8 +97,8 @@ INDELNOFIXED=$FINALVCF/$PREFIX.selected_nofixed.INDEL.vcf
 
  if [ ! -f $FILTEREDFIXEDINDEL ]; then
   gatk VariantFiltration --output $FILTEREDFIXEDINDEL \
-  --variant $ININDEL -R $GENOME \
-   --filter-expression "AF > 0.99" --filter-name FixedAllele \
+  --variant $ININDEL -R $REFGENOME \
+ #  --filter-expression "AF > 0.99" --filter-name FixedAllele \
   --cluster-window-size 10  -filter "QD < 2.0" --filter-name QualByDepth \
   -filter "MQRankSum < -12.5" --filter-name MapQualityRankSum \
   -filter "SOR > 4.0" --filter-name StrandOddsRatio \
@@ -108,28 +108,28 @@ INDELNOFIXED=$FINALVCF/$PREFIX.selected_nofixed.INDEL.vcf
  fi
 
  if [ ! -f $SNPONLY ]; then
-   gatk SelectVariants -R $GENOME \
+   gatk SelectVariants -R $REFGENOME \
    --variant $FILTEREDSNP \
    --output $SNPONLY \
    --exclude-filtered
  fi
 
  if [ ! -f $INDELONLY ]; then
-   gatk SelectVariants -R $GENOME \
+   gatk SelectVariants -R $REFGENOME \
    --variant $FILTEREDINDEL \
    --output $INDELONLY \
    --exclude-filtered 
  fi
 
  if [ ! -f $SNPNOFIXED ]; then
-     gatk SelectVariants -R $GENOME \
+     gatk SelectVariants -R $REFGENOME \
 	 --variant $FILTEREDFIXEDSNP \
 	 --output $SNPNOFIXED \
 	 --exclude-filtered
  fi
 
  if [ ! -f $INDELNOFIXED ]; then
-     gatk SelectVariants -R $GENOME \
+     gatk SelectVariants -R $REFGENOME \
 	 --variant $FILTEREDFIXEDINDEL \
 	 --output $INDELNOFIXED \
 	 --exclude-filtered

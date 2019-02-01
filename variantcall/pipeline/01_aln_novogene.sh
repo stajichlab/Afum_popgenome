@@ -10,21 +10,26 @@ module load gatk/3.7
 
 MEM=24g
 CENTER=Novogene
-GENOME=genome/Af293
-GENOMESTRAIN=Af293
-GENOMEIDX=$GENOME.fasta
-REFGENOME=genome/FungiDB-39_AfumigatusAf293_Genome.fasta
 INDIR=input/Novogene
-TOPOUTDIR=aln
-ALNFOLDER=bam
+TOPOUTDIR=tmp
+ALNFOLDER=aln
 HTCEXT=cram
 HTCFORMAT=cram
+GENOMESTRAIN=Af293
 
 if [ -f config.txt ]; then
     source config.txt
 fi
+if [ -z $REFGENOME ]; then
+    echo "NEED A REFGENOME - set in config.txt and make sure 00_index.sh is run"
+    exit
+fi
 
+if [ ! -f $REFGENOME.dict ]; then
+    echo "NEED a $REFGENOME.dict - make sure 00_index.sh is run"
+fi
 mkdir -p $TOPOUTDIR
+SAMPFILE=Novogene_samples.csv
 
 TEMP=/scratch
 N=${SLURM_ARRAY_TASK_ID}
@@ -33,7 +38,7 @@ if [ $SLURM_CPUS_ON_NODE ]; then
  CPU=$SLURM_CPUS_ON_NODE
 fi
 
-SAMPFILE=Novogene_samples.csv
+
 if [ -z $N ]; then
  N=$1
  if [ -z $N ]; then 
@@ -69,7 +74,7 @@ do
 		if [ -e $PAIR1 ]; then      	
 		    echo "SAMFILE is $SAMFILE"
 		    if [ ! -f $SAMFILE ]; then
-			bwa mem -t $CPU -R $READGROUP $GENOME $PAIR1 $PAIR2 > $SAMFILE
+			bwa mem -t $CPU -R $READGROUP $REFGENOME $PAIR1 $PAIR2 > $SAMFILE
 		    fi 
 		else
 		    echo "Cannot find $PAIR1, skipping $STRAIN"
@@ -77,12 +82,17 @@ do
 		fi
 		samtools fixmate --threads $CPU -O bam $SAMFILE $TEMP/${STRAIN}.fixmate.bam
 		samtools sort --threads $CPU -O bam -o  $SRTED -T $TEMP $TEMP/${STRAIN}.fixmate.bam
-		/usr/bin/rm $TEMP/${STRAIN}.fixmate.bam $SAMFILE
+		if [ -f $SRTED ]; then
+		    rm -f $TEMP/${STRAIN}.fixmate.bam $SAMFILE
+		fi
+		
 	    fi # SRTED file exists or was created by this block
 	    
 	    time java -jar $PICARD MarkDuplicates I=$SRTED O=$DDFILE \
 		METRICS_FILE=logs/$STRAIN.dedup.metrics CREATE_INDEX=true VALIDATION_STRINGENCY=SILENT
-	    
+	    if [ -f $DDFILE ]; then
+		rm -f $SRTED
+	    fi
 	fi # DDFILE is created after this or already exists
 
 	#	if [ ! -f $TOPOUTDIRDIR/$STRAIN.DD.bai ]; then
@@ -91,7 +101,7 @@ do
 	if [ ! -f $INTERVALS ]; then 
 	    time java -Xmx$MEM -jar $GATK \
 		-T RealignerTargetCreator \
-		-R $GENOMEIDX \
+		-R $REFGENOME \
 		-I $DDFILE \
 		-o $INTERVALS
 	fi
@@ -99,7 +109,7 @@ do
 	if [ ! -f $REALIGN ]; then
 	    time java -Xmx$MEM -jar $GATK \
 		-T IndelRealigner \
-		-R $GENOMEIDX \
+		-R $REFGENOME \
 		-I $DDFILE \
 		-targetIntervals $INTERVALS \
 		-o $REALIGN

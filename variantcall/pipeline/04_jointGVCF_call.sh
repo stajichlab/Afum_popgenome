@@ -1,7 +1,7 @@
 #!/usr/bin/bash
-#SBATCH --mem 32G --nodes 1 --ntasks 24 -J GATK.GVCFGeno --out logs/GVCFGeno.log --time 1-0:00:00
+#SBATCH --mem 128G --nodes 1 --ntasks 32 -J GATK.GVCFGeno --out logs/GVCFGeno.log --time 3-0:00:00
 
-MEM=32g
+MEM=128g
 module unload java
 module load java/8
 module load picard
@@ -9,7 +9,6 @@ module load gatk/3.8
 module load tabix
 module load parallel
 
-GENOME=genome/Af293.fasta
 FINALVCF=vcf
 VARIANTFOLDER=gvcf
 mkdir -p $FINALVCF
@@ -33,7 +32,7 @@ if [ ! -f $OUT.gz ]; then
  if [ ! -f $OUT ]; then
 	java -Xmx$MEM -jar $GATK \
     -T GenotypeGVCFs \
-    -R $GENOME \
+    -R $REFGENOME \
     $N \
     -o $OUT \
     -nt $CPU
