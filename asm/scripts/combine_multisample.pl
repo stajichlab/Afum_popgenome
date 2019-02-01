@@ -20,13 +20,16 @@ for my $samp ( keys %samps ) {
 	$strainnospace =~ s/\s+/_/g;
 
 	foreach my $strand ( qw(R1 R2) ) {
-	    printf("if [ ! -f %s_%s.fq.gz ]; then\n",$strainnospace,$strand);
-	    printf("   zcat %s | gzip -c > %s_%s.fq.gz\n",
-		   join(" ", map { sprintf("%s_%s.fq.gz", $_, $strand) } @sra),
-		$strainnospace, $strand);
-	    print "fi\n";
-	    printf "rm %s\n",join(" ", 
+	    if (  -f sprintf("input/%s_%s.fq.gz",$sra[0],$strand) ) {
+
+		printf("if [ ! -f %s_%s.fq.gz ]; then\n",$strainnospace,$strand);
+		printf("   zcat %s | gzip -c > %s_%s.fq.gz\n",
+		       join(" ", map { sprintf("%s_%s.fq.gz", $_, $strand) } @sra),
+		       $strainnospace, $strand);
+		print "fi\n";
+		printf "rm %s\n",join(" ", 
 				      map { sprintf("%s_%s.fq.gz",$_,$strand) } @sra);
+	    }
 	}
     }
 }
