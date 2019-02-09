@@ -3,6 +3,7 @@
 
 module load snpEff
 module load bcftools/1.9
+module load tabix
 
 SNPEFFOUT=snpEff
 SNPEFFGENOME=AfumigatusAf293_FungiDB_39
@@ -48,6 +49,13 @@ fi
 pushd $SNPEFFOUT
 #COMBVCF="../$FINALVCF/$PREFIX.selected_nofixed.SNP.vcf.gz ../$FINALVCF/$PREFIX.selected_nofixed.INDEL.vcf.gz"
 COMBVCF="../$FINALVCF/$PREFIX.selected.SNP.vcf.gz ../$FINALVCF/$PREFIX.selected.INDEL.vcf.gz"
+for n in $COMBVCF
+do
+ st=$(echo $n | perl -p -e 's/\.gz//')
+ if [ ! -f $n ]; then
+	 bgzip $st
+ fi
+done
 INVCF=$PREFIX.comb_selected.SNP.vcf
 OUTVCF=$PREFIX.snpEff.vcf
 OUTTAB=$PREFIX.snpEff.tab

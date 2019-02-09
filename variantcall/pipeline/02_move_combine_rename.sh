@@ -12,4 +12,4 @@ if [ -f config.txt ]; then
     source config.txt
 fi
 ./scripts/cram_to_combine.py  | parallel -j $JOBS
-parallel -j $CPU samtools index {} ::: $HTCFOLDER/*.cram
+for a in $(find $HTCFOLDER -name "*.cram"); do if [ $a -nt $a.crai ]; then  echo $a; fi; done | parallel -j $CPU samtools index {}
