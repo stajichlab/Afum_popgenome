@@ -42,18 +42,19 @@ if [ ! -e $SNPEFFOUT/$snpEffConfig ]; then
 	echo -e "\t$SNPEFFGENOME.mito_A_fumigatus_Af293.codonTable : Mold_Mitochondrial" >> $SNPEFFOUT/$snpEffConfig
 	mkdir -p $SNPEFFOUT/data/$SNPEFFGENOME
 	gzip -c $GFFGENOMEFILE > $SNPEFFOUT/data/$SNPEFFGENOME/genes.gff.gz
-	rsync -aL $FASTAGENOMEFILE $SNPEFFOUT/data/$SNPEFFGENOME/sequences.fa
+	rsync -aL $REFGENOME $SNPEFFOUT/data/$SNPEFFGENOME/sequences.fa
 
 	java -Xmx$MEM -jar $SNPEFFJAR build -datadir `pwd`/$SNPEFFOUT/data -c $SNPEFFOUT/$snpEffConfig -gff3 -v $SNPEFFGENOME
 fi
 pushd $SNPEFFOUT
-#COMBVCF="../$FINALVCF/$PREFIX.selected_nofixed.SNP.vcf.gz ../$FINALVCF/$PREFIX.selected_nofixed.INDEL.vcf.gz"
-COMBVCF="../$FINALVCF/$PREFIX.selected.SNP.vcf.gz ../$FINALVCF/$PREFIX.selected.INDEL.vcf.gz"
+COMBVCF="../$FINALVCF/$PREFIX.selected_nofixed.SNP.vcf.gz ../$FINALVCF/$PREFIX.selected_nofixed.INDEL.vcf.gz"
+#COMBVCF="../$FINALVCF/$PREFIX.selected.SNP.vcf.gz ../$FINALVCF/$PREFIX.selected.INDEL.vcf.gz"
 for n in $COMBVCF
 do
  st=$(echo $n | perl -p -e 's/\.gz//')
  if [ ! -f $n ]; then
 	 bgzip $st
+	 tabix $n
  fi
 done
 INVCF=$PREFIX.comb_selected.SNP.vcf

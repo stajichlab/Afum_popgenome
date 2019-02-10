@@ -4,6 +4,9 @@
 module load samtools/1.9
 
 CPU=$SLURM_CPUS_ON_NODE
+if [ -z $CPU ]; then
+	CPU=2
+fi
 JOBS=$(expr $CPU / 2)
 
 module load python/3

@@ -28,7 +28,7 @@ mkdir -p $TREEDIR
 for TYPE in SNP INDEL
 do
     root=$FINALVCF/$PREFIX.selected_nofixed.$TYPE
-    FAS=$TREEDIR/$PREFIX.nofixed.$TYPE.fasaln
+    FAS=$TREEDIR/$PREFIX.nofixed.$TYPE.mfa
     if [ -f $root.vcf ]; then
 	module load tabix
 	bgzip $root.vcf
@@ -37,21 +37,16 @@ do
     vcf=$root.vcf.gz
     tab=$root.bcftools.tab
     if [ ! -f $tab ]; then
-	bcftools query -H -f '%CHROM\t%POS\t%INFO/AF\t%INFO/AC\t%INFO/AN\t%REF\t%ALT{0}[\t%TGT]\n' ${vcf} > $tab
-	bcftools query -H -e 'INFO/AF < 0.1' -f '%CHROM\t%POS\t%INFO/AF\t%INFO/AC\t%INFO/AN\t%REF\t%ALT{0}[\t%TGT]\n' ${vcf} > $root.highfreq.bcftools.tab
+	bcftools query -H -f '%CHROM\t%POS\t%INFO/AF\t%INFO/AC\t%INFO/AN\t%REF\t%ALT{0}[\t%TGT]\n' ${vcf} > $tab 
+	bcftools query -H -e 'INFO/AF < 0.1' -f '%CHROM\t%POS\t%INFO/AF\t%INFO/AC\t%INFO/AN\t%REF\t%ALT{0}[\t%TGT]\n' ${vcf} > $root.highfreq.bcftools.tab 
     fi
     if [ ! -f $FAS ]; then
 	printf ">%s\n%s\n" $REFNAME $(bcftools query -e 'INFO/AF < 0.1' -f '%REF' ${vcf}) > $FAS
-	for str in $(bcftools query -l ${vcf});
-	do
-	    printf ">%s\n%s\n" $str $(bcftools query -e 'INFO/AF < 0.1' -s $str -f '[%TGT]' ${vcf}) >> $FAS
-	done
-#	parallel $(bcftools query -e 'INFO/AF < 0.1' -s {} -f '[%TGT]' ${vcf}) ::: $(bcftools query -l ${vcf})
-	perl -i -p -e 'if (/^>/) { s/[\(\)#]/_/g; s/_+/_/g; }' $FAS
+	perl -i -p -e 'if (/^>/) { s/[\(\)#]/_/g; s/_+/_/g; } else { s/[\*\.]/-/g; }' $FAS
     fi
-
-    if [ ! -f $TREEDIR/$PREFIX.fasttree.tre ]; then
-	FastTreeMP -gtr -gamma -nt < $FAS > $TREEDIR/$PREFIX.fasttree.tre
+    cat tmp_out/$PREFIX.*.$TYPE.*.fas_seq >> $FAS
+    if [ ! -f $TREEDIR/$PREFIX.$TYPE.fasttree.tre ]; then
+	FastTreeMP -gtr -gamma -nt < $FAS > $TREEDIR/$PREFIX.$TYPE.fasttree.tre
     fi
 done
 #iqtree-omp -nt $CPU -s $FAS -m GTR+ASC -b 100
