@@ -10,7 +10,7 @@ module load gatk/3.7
 
 MEM=24g
 CENTER=UCR_UCSF
-INDIR=input/UCSF_20190219
+INDIR=input/UCSF_201902-03
 TOPOUTDIR=tmp
 ALNFOLDER=aln
 HTCEXT=cram
@@ -29,26 +29,26 @@ if [ ! -f $REFGENOME.dict ]; then
     echo "NEED a $REFGENOME.dict - make sure 00_index.sh is run"
 fi
 mkdir -p $TOPOUTDIR
-SAMPFILE=UCSF_20190219_samples.csv
+SAMPFILE=UCSF_201902-03_samples.csv
 
 TEMP=/scratch
 N=${SLURM_ARRAY_TASK_ID}
 CPU=1
-if [ $SLURM_CPUS_ON_NODE ]; then 
+if [ $SLURM_CPUS_ON_NODE ]; then
  CPU=$SLURM_CPUS_ON_NODE
 fi
 
 
 if [ -z $N ]; then
  N=$1
- if [ -z $N ]; then 
+ if [ -z $N ]; then
      echo "need to provide a number by --array or cmdline"
      exit
  fi
 fi
 
 MAX=$(wc -l $SAMPFILE | awk '{print $1}')
-if [ $N -gt $MAX ]; then 
+if [ $N -gt $MAX ]; then
  echo "$N is too big, only $MAX lines in $SAMPFILE"
  exit
 fi
@@ -65,17 +65,17 @@ do
     DDFILE=$TOPOUTDIR/$STRAIN.DD.bam
     REALIGN=$TOPOUTDIR/$STRAIN.realign.bam
     INTERVALS=$TOPOUTDIR/$STRAIN.intervals
-    FINALFILE=$ALNFOLDER/$STRAIN.$HTCEXT    
+    FINALFILE=$ALNFOLDER/$STRAIN.$HTCEXT
     READGROUP="@RG\tID:$STRAIN\tSM:$STRAIN\tLB:$PREFIX\tPL:illumina\tCN:$CENTER"
-    
+
     if [ ! -f $FINALFILE ]; then
 	if [ ! -f $DDFILE ]; then
 	    if [ ! -f $SRTED ]; then
-		if [ -e $PAIR1 ]; then      	
+		if [ -e $PAIR1 ]; then
 		    echo "SAMFILE is $SAMFILE"
 		    if [ ! -f $SAMFILE ]; then
 			bwa mem -t $CPU -R $READGROUP $REFGENOME $PAIR1 $PAIR2 > $SAMFILE
-		    fi 
+		    fi
 		else
 		    echo "Cannot find $PAIR1, skipping $STRAIN"
 		    exit
@@ -85,9 +85,9 @@ do
 		if [ -f $SRTED ]; then
 		    rm -f $TEMP/${STRAIN}.fixmate.bam $SAMFILE
 		fi
-		
+
 	    fi # SRTED file exists or was created by this block
-	    
+
 	    time java -jar $PICARD MarkDuplicates I=$SRTED O=$DDFILE \
 		METRICS_FILE=logs/$STRAIN.dedup.metrics CREATE_INDEX=true VALIDATION_STRINGENCY=SILENT
 	    if [ -f $DDFILE ]; then
@@ -98,7 +98,7 @@ do
 	#	if [ ! -f $TOPOUTDIRDIR/$STRAIN.DD.bai ]; then
 	#	    time java -jar $PICARD BuildBamIndex I=$TOPOUTDIR/$STRAIN.DD.bam TMP_DIR=/scratch
 	#	fi
-	if [ ! -f $INTERVALS ]; then 
+	if [ ! -f $INTERVALS ]; then
 	    time java -Xmx$MEM -jar $GATK \
 		-T RealignerTargetCreator \
 		-R $REFGENOME \
@@ -114,7 +114,7 @@ do
 		-targetIntervals $INTERVALS \
 		-o $REALIGN
 	fi # REALIGN created or already existed
-	
+
 	samtools view -O $HTCFORMAT --threads $CPU \
 	    --reference $REFGENOME -o $FINALFILE $REALIGN
 	samtools index $FINALFILE
@@ -125,5 +125,5 @@ do
 	    rm -f $(echo $DDFILE | sed 's/bam$/bai/')
 	    rm -f $INTERVALS
 	fi
-    fi #FINALFILE created or already exists  
+    fi #FINALFILE created or already exists
 done
