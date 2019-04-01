@@ -51,6 +51,7 @@ COMBVCF="../$FINALVCF/$PREFIX.selected_nofixed.SNP.vcf.gz ../$FINALVCF/$PREFIX.s
 #COMBVCF="../$FINALVCF/$PREFIX.selected.SNP.vcf.gz ../$FINALVCF/$PREFIX.selected.INDEL.vcf.gz"
 for n in $COMBVCF
 do
+ echo $n
  st=$(echo $n | perl -p -e 's/\.gz//')
  if [ ! -f $n ]; then
 	 bgzip $st
