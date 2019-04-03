@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 import sys, warnings
-import vcf
+import vcf,re
 from Bio import SeqIO
 # this script will convert a VCF from snpEff into a useful table
 
@@ -24,24 +24,32 @@ for seq in SeqIO.parse(genome, "fasta"):
 for record in vcf_reader:
         if count == 0:
                 sampname = []
-                title = ["CHROM","POS","FLANKING","TYPE","GENE","REF","ALT"]
+                title = ["CHROM","POS","FLANKING","TYPE","IMPACT","GENE",
+                         "CHANGEDNA","CHANGEPEP","REF","ALT"]
                 for sample in record.samples:
                         title.append(str(sample.sample))
                 title.append("ANN")
                 print("\t".join(title))
                 count = 1
-
+        if 'ANN' not in record.INFO:
+           sys.stderr.write("Cannot find ANN in %s\n"%(record))
+           continue
         anns = record.INFO['ANN']
         arrayout = [record.CHROM,record.POS]
         flanking_seq = chrs[record.CHROM][record.POS-10:record.POS+10]
         arrayout.append(flanking_seq)
         annarr = anns[0].split('|')
+        dnachg = re.sub("c.","",annarr[9])
         if ( annarr[1] == 'upstream_gene_variant' or
              annarr[1] == 'downstream_gene_variant' or
              annarr[1] == 'intergenic_region'):
-                arrayout.extend(('intergenic',annarr[3]))
+                arrayout.extend(('intergenic',annarr[2],annarr[3],
+                         dnachg,""))
         else:
-                arrayout.extend((annarr[1],annarr[3]))
+                pepchg = re.sub('p.','',annarr[10])
+                arrayout.extend((annarr[1],annarr[2],annarr[3],
+                                 dnachg,pepchg))
+
         arrayout.extend((record.REF,record.ALT))
 	#print arrayout
         for sample in record.samples:
