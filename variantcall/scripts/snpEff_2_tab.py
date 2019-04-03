@@ -39,14 +39,14 @@ for record in vcf_reader:
         flanking_seq = chrs[record.CHROM][record.POS-10:record.POS+10]
         arrayout.append(flanking_seq)
         annarr = anns[0].split('|')
-        dnachg = re.sub("c.","",annarr[9])
+        dnachg = re.sub("^c\.","",annarr[9])
         if ( annarr[1] == 'upstream_gene_variant' or
              annarr[1] == 'downstream_gene_variant' or
              annarr[1] == 'intergenic_region'):
                 arrayout.extend(('intergenic',annarr[2],annarr[3],
                          dnachg,""))
         else:
-                pepchg = re.sub('p.','',annarr[10])
+                pepchg = re.sub('^p\.','',annarr[10])
                 arrayout.extend((annarr[1],annarr[2],annarr[3],
                                  dnachg,pepchg))
 
