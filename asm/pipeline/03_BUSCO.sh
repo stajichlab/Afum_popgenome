@@ -19,6 +19,7 @@ if [ ! $N ]; then
         exit
     fi
 fi
+
 if [ -z ${SLURM_ARRAY_JOB_ID} ]; then
 	SLURM_ARRAY_JOB_ID=$$
 fi
@@ -29,19 +30,17 @@ OUTFOLDER=BUSCO
 TEMP=/scratch/${SLURM_ARRAY_JOB_ID}_${N}
 mkdir -p $TEMP
 SAMPLEFILE=samples.dat
-NAME=$(sed -n ${N}p $SAMPLEFILE | cut -f1)
-PHYLUM=$(sed -n ${N}p $SAMPLEFILE | cut -f2)
 SEED_SPECIES=aspergillus_fumigatus
-GENOMEFILE=$(realpath $GENOMEFOLDER/${NAME}.${EXT})
-LINEAGE=$(realpath $LINEAGE)
-
-if [ -d "$OUTFOLDER/run_${NAME}" ];  then
-    echo "Already have run $NAME in folder busco - do you need to delete it to rerun?"
-    exit
-else
-    pushd $OUTFOLDER
-    busco.py -i $GENOMEFILE -l $LINEAGE -o $NAME -m geno --cpu $CPU --tmp $TEMP -sp $SEED_SPECIES --tarzip
-    popd
-fi
-
-rm -rf $TEMP
+sed -n ${N}p $SAMPLEFILE | while read BASE NAME PHYLUM
+do
+	GENOMEFILE=$(realpath $GENOMEFOLDER/${NAME}.${EXT})
+	if [ -d "$OUTFOLDER/run_${NAME}" ];  then
+    		echo "Already have run $NAME in folder busco - do you need to delete it to rerun?"
+   		exit
+	else
+    		pushd $OUTFOLDER
+    		busco.py -i $GENOMEFILE -l $LINEAGE -o $NAME -m geno --cpu $CPU --tmp $TEMP -sp $SEED_SPECIES --tarzip
+    		popd
+	fi
+	rm -rf $TEMP
+done

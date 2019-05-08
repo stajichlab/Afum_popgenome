@@ -1,8 +1,8 @@
 #!/bin/bash
-#SBATCH --nodes 1 --ntasks 8 --mem 64gb -J afumAAFTF --out logs/AAFTF_readprep.%a.log -p short --time 2:00:00
+#SBATCH --nodes 1 --ntasks 16 --mem 256gb -J afumAAFTF --out logs/AAFTF_readprep.%a.log -p highmem --time 2:00:00
 
 hostname
-MEM=64
+MEM=256
 CPU=$SLURM_CPUS_ON_NODE
 N=${SLURM_ARRAY_TASK_ID}
 
@@ -14,7 +14,7 @@ if [ ! $N ]; then
     fi
 fi
 
-module load AAFTF/git-live.noworkdir
+module load AAFTF/git-live
 
 OUTDIR=input
 SAMPLEFILE=samples.dat
