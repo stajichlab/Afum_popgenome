@@ -30,11 +30,12 @@ do
     root=$FINALVCF/$PREFIX.selected_nofixed.$TYPE
     FAS=$TREEDIR/$PREFIX.nofixed.$TYPE.mfa
     if [ -f $root.vcf ]; then
-	module load tabix
 	bgzip $root.vcf
-	tabix $root.vcf.gz
     fi
     vcf=$root.vcf.gz
+    if [ ! -f $vcf.tbi ]; then
+	    tabix $vcf
+    fi
     tab=$root.bcftools.tab
     if [ ! -f $tab ]; then
 	bcftools query -H -f '%CHROM\t%POS\t%INFO/AF\t%INFO/AC\t%INFO/AN\t%REF\t%ALT{0}[\t%TGT]\n' ${vcf} > $tab 

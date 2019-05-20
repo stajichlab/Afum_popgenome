@@ -1,5 +1,5 @@
 #!/usr/bin/bash
-#SBATCH --mem 24G --ntasks 8 --nodes 1 -J alnUCSFAfum
+#SBATCH --mem 96G --ntasks 8 --nodes 1 -J alnUCSFAfum
 #SBATCH --out logs/UCSF.%a.log --time 8:00:00
 
 module load bwa/0.7.17
@@ -8,7 +8,7 @@ module load java/8
 module load picard
 module load gatk/3.7
 
-MEM=24g
+MEM=96g
 CENTER=UCR_UCSF
 INDIR=input/UCSF_201902-03
 TOPOUTDIR=tmp
