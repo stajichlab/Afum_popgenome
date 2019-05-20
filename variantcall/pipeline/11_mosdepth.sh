@@ -8,13 +8,16 @@ fi
 if [ -f config.txt ]; then
 	source config.txt
 fi
-GENOME=$GENOMEFOLDER/$GENOMEFASTA
-module unload python/2.7.5
+module load miniconda3
 mkdir -p coverage/mosdepth
-export PATH="/bigdata/stajichlab/jstajich/miniconda3/bin:$PATH"
 
+echo $REFGENOME
+if [ -z $REFGENOME ]; then
+	echo "need a REFGENOME file for CRAM"
+	exit
+fi
 WINDOW=10000
-parallel --jobs $CPU mosdepth -f $GENOME -T 1,10,50,100,200 -n --by $WINDOW -t 2 "{= s:${ALNFOLDER}\/:coverage/mosdepth/:; s:\.cram:.${WINDOW}bp: =}" {} ::: ${ALNFOLDER}/*.cram
+parallel --jobs $CPU mosdepth -f $REFGENOME -T 1,10,50,100,200 -n --by $WINDOW -t 2 "{= s:${ALNFOLDER}\/:coverage/mosdepth/:; s:\.cram:.${WINDOW}bp: =}" {} ::: ${ALNFOLDER}/*.cram
 
 bash scripts/mosdepth_prep_ggplot.sh
 mkdir -p plots
