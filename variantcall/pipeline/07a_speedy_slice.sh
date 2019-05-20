@@ -38,7 +38,6 @@ for TYPE in SNP INDEL
 do
     root=$FINALVCF/$PREFIX.selected_nofixed.$TYPE
     if [ -f $root.vcf ]; then
-	module load tabix
 	bgzip $root.vcf
 	tabix $root.vcf.gz
     fi
