@@ -3,7 +3,7 @@ import sys, warnings
 import vcf,re
 from Bio import SeqIO
 # this script will convert a VCF from snpEff into a useful table
-
+FLANK_LENGTH=10
 if len(sys.argv) < 2:
         warnings.warn("Usage snpEff_to_table.py snpeff.vcf genome")
         sys.exit()
@@ -36,7 +36,7 @@ for record in vcf_reader:
            continue
         anns = record.INFO['ANN']
         arrayout = [record.CHROM,record.POS]
-        flanking_seq = chrs[record.CHROM][record.POS-10:record.POS+10]
+        flanking_seq = chrs[record.CHROM][record.POS-FLANK_LENGTH:record.POS+FLANK_LENGTH+1]
         arrayout.append(flanking_seq)
         annarr = anns[0].split('|')
         dnachg = re.sub("^c\.","",annarr[9])
