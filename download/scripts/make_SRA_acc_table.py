@@ -34,6 +34,12 @@ for f in files:
                 Center = "JPL"
             elif Project == "PRJNA477519":
                 Center = "ICIII"
+            elif Project == "PRJEB1497":
+                Center = "Manchester"
+            elif ID == "SRR2954803":
+                Center = "LA_MOLINA"
+            elif Project == "PRJNA528395":
+                Center = "Radboud"
 
             Library = ""
             if "Library_Name" in headerdict:
@@ -48,6 +54,8 @@ for f in files:
                 Strain = re.sub(r'Afu\s+','Afu_',Strain)
                 Strain = re.sub(r'(A\.|Aspergillus)\s+fumigatus\s+','',Strain)
                 Strain = re.sub(r'\s+Sample$','',Strain)
+                Strain = re.sub(r'AF293\s+','AF293-',Strain)
+                Strain = re.sub(r'Af10\s+.+','Af10',Strain)
                 strainsplit = Strain.split()
                 if len(strainsplit) == 2:
                     Strain = strainsplit[0]
@@ -55,14 +63,18 @@ for f in files:
             else:
                 Strain = Library
 
-            
-                
+            Strain = re.sub(r'AF293\s+','AF293-',Strain)
+
             Biosample = ""
             if "BioSample" in headerdict:
                 Biosample = row[ headerdict["BioSample"]]
             else:
                 print("no biosample in file %f" %(f))
-                
+
+            # hardcode one sample to deal with same name 2x
+            if Biosample == "SAMEA2052099":
+                Strain = Strain + "-MCH"
+
             if ID in sratable:
                 print("already seen %s checking file %s" % (ID,f))
             sratable[ID] = [ID,Strain,Biosample,
