@@ -27,8 +27,8 @@ module load fasttree
 mkdir -p $TREEDIR
 for TYPE in SNP INDEL
 do
-    root=$FINALVCF/$PREFIX.selected_nofixed.$TYPE
-    FAS=$TREEDIR/$PREFIX.nofixed.$TYPE.mfa
+    root=$FINALVCF/$PREFIX.selected.$TYPE
+    FAS=$TREEDIR/$PREFIX.$TYPE.mfa
     if [ -f $root.vcf ]; then
 	bgzip $root.vcf
     fi
@@ -45,7 +45,7 @@ do
 	printf ">%s\n%s\n" $REFNAME $(bcftools query -e 'INFO/AF < 0.1' -f '%REF' ${vcf}) > $FAS
 	perl -i -p -e 'if (/^>/) { s/[\(\)#]/_/g; s/_+/_/g; } else { s/[\*\.]/-/g; }' $FAS
     fi
-    cat tmp_out/$PREFIX.*.$TYPE.*.fas_seq >> $FAS
+    cat tmp_out/$PREFIX.$TYPE.*.fas_seq >> $FAS
     if [ ! -f $TREEDIR/$PREFIX.$TYPE.fasttree.tre ]; then
 	FastTreeMP -gtr -gamma -nt < $FAS > $TREEDIR/$PREFIX.$TYPE.fasttree.tre
     fi
