@@ -1,0 +1,2 @@
+StrainID,StrainPrefix,Forward,Reverse
+ICMP-23421,ICMP-23421,ICMP-23421_S1_1.fastq.gz,ICMP-23421_S1_2.fastq.gz
