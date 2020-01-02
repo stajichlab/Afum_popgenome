@@ -19,6 +19,10 @@ fi
 WINDOW=10000
 parallel --jobs $CPU mosdepth -f $REFGENOME -T 1,10,50,100,200 -n --by $WINDOW -t 2 "{= s:${ALNFOLDER}\/:coverage/mosdepth/:; s:\.cram:.${WINDOW}bp: =}" {} ::: ${ALNFOLDER}/*.cram
 
+WINDOW=1000
+parallel --jobs $CPU mosdepth -f $REFGENOME -T 1,10,50,100,200 -n --by $WINDOW -t 2 "{= s:${ALNFOLDER}\/:coverage/mosdepth/:; s:\.cram:.${WINDOW}bp: =}" {} ::: ${ALNFOLDER}/*.cram
+
 bash scripts/mosdepth_prep_ggplot.sh
+bash scripts/mosdepth_prep_ggplot_nonorm.sh
 mkdir -p plots
 Rscript Rscripts/plot_mosdepth_CNV.R

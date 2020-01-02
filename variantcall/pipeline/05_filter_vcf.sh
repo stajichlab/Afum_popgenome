@@ -123,36 +123,36 @@ if [[ ! -f $FILTEREDFIXEDINDEL.gz || $INDEL.gz -nt $FILTEREDFIXEDINDEL.gz ]]; th
     tabix $FILTEREDFIXEDINDEL.gz
 fi
 
-if [[ ! -f $SNPONLY.gz || $FILTEREDSNP -nt $SNPONLY.gz ]]; then
+if [[ ! -f $SNPONLY.gz || $FILTEREDSNP.gz -nt $SNPONLY.gz ]]; then
     gatk SelectVariants -R $REFGENOME \
-	--variant $FILTEREDSNP \
+	--variant $FILTEREDSNP.gz \
 	--output $SNPONLY \
 	--exclude-filtered --create-output-variant-index false
     bgzip $SNPONLY
     tabix $SNPONLY.gz
 fi
 
-if [[ ! -f $INDELONLY.gz || $FILTEREDINDEL -nt $INDELONLY.gz ]]; then
+if [[ ! -f $INDELONLY.gz || $FILTEREDINDEL.gz -nt $INDELONLY.gz ]]; then
     gatk SelectVariants -R $REFGENOME \
-	--variant $FILTEREDINDEL \
+	--variant $FILTEREDINDEL.gz \
 	--output $INDELONLY \
 	--exclude-filtered --create-output-variant-index false
     bgzip $INDELONLY
     tabix $INDELONLY.gz
 fi
 
-if [[ ! -f $SNPNOFIXED.gz || $FILTEREDFIXEDSNP -nt $SNPNOFIXED.gz ]]; then
+if [[ ! -f $SNPNOFIXED.gz || $FILTEREDFIXEDSNP.gz -nt $SNPNOFIXED.gz ]]; then
     gatk SelectVariants -R $REFGENOME \
-	--variant $FILTEREDFIXEDSNP \
+	--variant $FILTEREDFIXEDSNP.gz \
 	--output $SNPNOFIXED \
 	--exclude-filtered --create-output-variant-index false
     bgzip $SNPNOFIXED
     tabix $SNPNOFIXED.gz
 fi
 
-if [[ ! -f $INDELNOFIXED.gz || $FILTEREDFIXEDINDEL -nt $INDELNOFIXED.gz ]]; then
+if [[ ! -f $INDELNOFIXED.gz || $FILTEREDFIXEDINDEL.gz -nt $INDELNOFIXED.gz ]]; then
     gatk SelectVariants -R $REFGENOME \
-	--variant $FILTEREDFIXEDINDEL \
+	--variant $FILTEREDFIXEDINDEL.gz \
 	--output $INDELNOFIXED \
 	--exclude-filtered --create-output-variant-index false
     bgzip $INDELNOFIXED

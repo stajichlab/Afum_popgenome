@@ -8,7 +8,6 @@ module load gatk/3.8
 module load bcftools/1.9
 module load samtools/1.9
 module load picard
-module load tabix
 
 MEM=32g
 

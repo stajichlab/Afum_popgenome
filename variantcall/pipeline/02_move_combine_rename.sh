@@ -2,7 +2,8 @@
 #SBATCH -p batch --ntasks 48 --mem 48g --time 12:00:00
 
 module load samtools/1.9
-
+module unload perl
+module load parallel
 CPU=$SLURM_CPUS_ON_NODE
 if [ -z $CPU ]; then
 	CPU=2

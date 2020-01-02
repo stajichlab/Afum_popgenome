@@ -65,3 +65,7 @@ bcftools concat -a -d both -o $INVCF -O v $COMBVCF
 java -Xmx$MEM -jar $SNPEFFJAR eff -dataDir `pwd`/data -v $SNPEFFGENOME $INVCF > $OUTVCF
 
 bcftools query -H -f '%CHROM\t%POS\t%REF\t%ALT{0}[\t%TGT]\t%INFO/ANN\n' $OUTVCF > $OUTTAB
+
+../scripts/map_snpEff2domains.py --vcf $OUTVCF --domains ../genome/FungiDB-39_AfumigatusAf293_InterproDomains.txt --output A_fumigiatus_Af293.Popgen8.snpEf.domain_variants.tsv
+
+../scripts/snpEff_2_tab.py A_fumigiatus_Af293.Popgen8.snpEff.vcf > A_fumigiatus_Af293.Popgen8.snpEff.matrix.tab
