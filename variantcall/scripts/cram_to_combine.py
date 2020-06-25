@@ -66,7 +66,7 @@ with open(file,"r") as tablefh:
         else:
             strains[strain] = [alnfile]
 
-for stdfile in [ "UCSF_201902-03_samples.csv", "UK_Imperial_samples.csv"]:
+for stdfile in [ "UCSF_201902-03_samples.csv", "UK_Imperial_samples.csv", "AF100_DMC_201912.csv", "COH_round2_samples.csv"]:
     with open(stdfile,"r") as tablefh:
         reader = csv.reader(tablefh,delimiter=",")
         header = next(reader)
