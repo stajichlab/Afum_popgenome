@@ -1,7 +1,9 @@
 #!/bin/bash
-#SBATCH --nodes 1 --ntasks 4 --mem 16G --time 36:00:00 --out logs/busco.%a.log -J busco
+#SBATCH --nodes 1 --ntasks 4 --mem 16G --time 24:00:00 --out logs/busco.%a.log -J busco
 
 module load busco
+module unload ncbi-blast
+module load ncbi-blast/2.2.31+
 
 # for augustus training
 # set to a local dir to avoid permission issues and pollution in global

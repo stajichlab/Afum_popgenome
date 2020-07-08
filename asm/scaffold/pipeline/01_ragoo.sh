@@ -35,9 +35,11 @@ SCAF=$OUT/$NAME
 
 mkdir -p $SCAF
 pushd $SCAF
-ln -s $CTGS contigs.fasta
-ln -s $REF reference.fasta
-ragoo.py -m $(which minimap2) -t $CPU -b -C contigs.fasta reference.fasta
-module load AAFTF
-AAFTF assess -i ragoo_output/ragoo.fasta -r assembly.stats.txt
+if [ ! -s assembly.stats.txt ]; then
+  ln -s $CTGS contigs.fasta
+  ln -s $REF reference.fasta
+  ragoo.py -m $(which minimap2) -t $CPU -b -C contigs.fasta reference.fasta
+  module load AAFTF
+  AAFTF assess -i ragoo_output/ragoo.fasta -r assembly.stats.txt
+fi
 popd
