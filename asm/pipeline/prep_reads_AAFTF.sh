@@ -1,5 +1,5 @@
 #!/bin/bash
-#SBATCH --nodes 1 --ntasks 16 --mem 256gb -J afumAAFTF --out logs/AAFTF_readprep.%a.log -p highmem --time 2:00:00
+#SBATCH --nodes 1 --ntasks 16 --mem 256gb -J prepafumAAFTF --out logs/AAFTF_readprep.%a.log -p highmem --time 24:00:00
 
 hostname
 MEM=256
