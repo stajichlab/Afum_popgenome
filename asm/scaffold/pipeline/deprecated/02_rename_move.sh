@@ -15,8 +15,9 @@ OUT=genomes_scaffolded
 mkdir -p $OUT
 CTGS=$(ls $ASM/*.sorted.fasta | sed -n ${N}p)
 NAME=$(basename $CTGS .sorted.fasta)
-SCAFFOLDS=$IN/$NAME/ragtag.scaffolds.fasta
+SCAFFOLDS=$IN/$NAME/ragoo_output/ragoo.fasta
 if [ ! -s $OUT/$NAME.scaffolds.fasta ]; then
 	module load AAFTF
 	AAFTF sort -i $SCAFFOLDS -o $OUT/$NAME.scaffolds.fasta
 fi
+

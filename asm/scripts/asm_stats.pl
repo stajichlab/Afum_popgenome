@@ -1,4 +1,4 @@
-#!/usr/bin/perl
+#!/usr/bin/env perl
 #
 use File::Spec;
 use strict;
@@ -7,7 +7,7 @@ use warnings;
 my %stats;
 
 my $readlen = 150;    # assume reads are 150bp?
-
+my $buscosearch = 'eurotiales_odb10';
 my $read_map_stat = 'mapping_report';
 my $dir           = shift || 'genomes';
 my %cols;
@@ -44,12 +44,9 @@ foreach my $file ( readdir(DIR) ) {
 
     my $busco_file = File::Spec->catfile(
         "BUSCO", $stem,
-        sprintf( "run_%s",               $stem ),
-        sprintf( "short_summary_%s.txt", $stem )
-    );
-
+        sprintf( "short_summary.specific.%s.%s.txt",$buscosearch,$stem));
+    warn("busco=$busco_file\n");
     if ( -f $busco_file ) {
-
         open( my $fh => $busco_file ) || die $!;
         while (<$fh>) {
             if (
