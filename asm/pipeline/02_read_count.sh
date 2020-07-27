@@ -29,7 +29,11 @@ mkdir -p $OUTDIR
 if [[ ! -s $OUTDIR/${BASE}.bbmap_covstats.txt || $SORTED -nt $OUTDIR/${BASE}.bbmap_covstats.txt ]]; then
 	mkdir -p N$N.$$.bbmap
 	pushd N$N.$$.bbmap
-	bbmap.sh -Xmx${MEM}g ref=$SORTED in=$LEFT in2=$RIGHT covstats=../$OUTDIR/${BASE}.bbmap_covstats.txt  statsfile=../$OUTDIR/${BASE}.bbmap_summary.txt
+	if [ ! -e $RIGHT ]; then
+		bbmap.sh -Xmx${MEM}g ref=$SORTED in=$LEFT covstats=../$OUTDIR/${BASE}.bbmap_covstats.txt  statsfile=../$OUTDIR/${BASE}.bbmap_summary.txt
+	else
+		bbmap.sh -Xmx${MEM}g ref=$SORTED in=$LEFT in2=$RIGHT covstats=../$OUTDIR/${BASE}.bbmap_covstats.txt  statsfile=../$OUTDIR/${BASE}.bbmap_summary.txt
+	fi
 	popd
 	rm -rf N$N.$$.bbmap
 fi
