@@ -37,7 +37,7 @@ foreach my $file ( readdir(DIR) ) {
    }
 
     if ($first) {
-        push @header, qw(BUSCO_Complete BUSCO_Single BUSCO_Single BUSCO_Single
+        push @header, qw(BUSCO_Complete BUSCO_Single BUSCO_Duplicate
           BUSCO_Fragmented BUSCO_Missing BUSCO_NumGenes
         );
     }
@@ -49,8 +49,7 @@ foreach my $file ( readdir(DIR) ) {
     if ( -f $busco_file ) {
         open( my $fh => $busco_file ) || die $!;
         while (<$fh>) {
-            if (
-/^\s+C:(\d+\.\d+)\%\[S:(\d+\.\d+)%,D:(\d+\.\d+)%\],F:(\d+\.\d+)%,M:(\d+\.\d+)%,n:(\d+)/
+            if (/^\s+C:(\d+\.\d+)\%\[S:(\d+\.\d+)%,D:(\d+\.\d+)%\],F:(\d+\.\d+)%,M:(\d+\.\d+)%,n:(\d+)/
               )
             {
                 $stats{$stem}->{"BUSCO_Complete"}   = $1;
