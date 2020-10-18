@@ -19,7 +19,11 @@ for f in files:
             i += 1
 
         for row in reader:
-            ID = row[headerdict["Run"]]
+            if "Run" in headerdict:
+                ID = row[headerdict["Run"]]
+            else:
+                print("cannot find Run in file {}".format(tabfile))
+                exit()
 
             Center = ""
             if "Center_Name" in headerdict:
@@ -40,6 +44,8 @@ for f in files:
                 Center = "LA_MOLINA"
             elif Project == "PRJNA528395":
                 Center = "Radboud"
+            elif Project == "PRJNA638646":
+                Center = "UMassAmherst"
 
             Library = ""
             if "Library_Name" in headerdict:
@@ -74,7 +80,9 @@ for f in files:
             # hardcode one sample to deal with same name 2x
             if Biosample == "SAMEA2052099":
                 Strain = Strain + "-MCH"
-
+            #black LIST these strains
+            if Biosample == "SAMEA2052103" or Biosample == "SAMEA2051883":  # these are A.nidulans 
+                continue
             if ID in sratable:
                 print("already seen %s checking file %s" % (ID,f))
             sratable[ID] = [ID,Strain,Biosample,
