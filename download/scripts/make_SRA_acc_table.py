@@ -54,6 +54,8 @@ for f in files:
             Strain = ""
             if "strain" in headerdict:
                 Strain =  row[ headerdict["strain"]]
+            elif "Strain" in headerdict:
+                Strain = row[ headerdict["Strain"]]
             elif "Sample_Name" in headerdict:
                 Strain = row[ headerdict["Sample_Name"]]
                 Strain = re.sub(r'^\d+\s+','',Strain)
