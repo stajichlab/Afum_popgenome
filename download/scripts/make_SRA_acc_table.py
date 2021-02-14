@@ -15,6 +15,7 @@ for f in files:
         headerdict = {}
         i = 0
         for h in header:
+            h = h.replace(" ","_")
             headerdict[h] = i
             i += 1
 
@@ -54,7 +55,7 @@ for f in files:
             Strain = ""
             if "strain" in headerdict:
                 Strain =  row[ headerdict["strain"]]
-            elif "Strain" in headerdict:
+            elif "Strain" in headerdict and row[ headerdict["Strain"]] != "missing":
                 Strain = row[ headerdict["Strain"]]
             elif "Sample_Name" in headerdict:
                 Strain = row[ headerdict["Sample_Name"]]
