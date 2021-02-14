@@ -29,7 +29,7 @@ do
  if [ ! -f $OUTDIR/${SRARUN}_1.fastq.gz ]; then
 #	prefetch -a "$ASCP|$ASPERAKEY" --ascp-options "-k1 -Tr -l800m" $SRARUN
 	echo $SRARUN > /tmp/run.$$
-	prefetch -t fasp --ascp-path "$ASCP|$ASPERAKEY" --option-file=/tmp/run.$$
+	prefetch --option-file=/tmp/run.$$
 	unlink /tmp/run.$$
 	echo "($N) $SRARUN"
 #	fastq-dump $SRARUN --gzip --split-files -O $OUTDIR
